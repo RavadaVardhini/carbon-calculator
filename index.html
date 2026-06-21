@@ -374,7 +374,8 @@
         saveToSheet(score, category);
     }
 
-   function saveToSheet(score, category) {
+  js
+function saveToSheet(score, category) {
     const statusEl = document.getElementById("saveStatus");
     statusEl.className = "save-status saving";
     statusEl.textContent = "⏳ Saving your responses...";
@@ -389,6 +390,23 @@
         q9: getAnswerText(8), q10: getAnswerText(9),
         q11: getAnswerText(10), q12: getAnswerText(11)
     };
+
+    // THIS IS THE FIX: Added 'no-cors' and 'text/plain'
+    fetch("https://script.google.com/macros/s/AKfycbxBIoZUyVwpiTTA97WdLLzP9JS_JncsxEL4sjGz6958zCQcvYidjywN2MlRbmBpU6cD/exec", {
+        method: "POST",
+        mode: "no-cors", 
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify(payload)
+    })
+    .then(() => {
+        statusEl.className = "save-status saved";
+        statusEl.textContent = "✅ Responses saved to Google Sheet!";
+    })
+    .catch(() => {
+        statusEl.className = "save-status error";
+        statusEl.textContent = "⚠️ Could not save — please note your answers manually.";
+    });
+}
 
     fetch(WEB_APP_URL, {
         method: "POST",
