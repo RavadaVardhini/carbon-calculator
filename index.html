@@ -263,7 +263,7 @@
 <div class="toast" id="toast">Copied!</div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxnfpvmJVY2dHO1VlHV8KKUn6j-_jdREuUD0uBJlS0dKIKjgB3p4CcrXiZdd0fbnTpIHQ/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxBIoZUyVwpiTTA97WdLLzP9JS_JncsxEL4sjGz6958zCQcvYidjywN2MlRbmBpU6cD/exec";
     const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdMeDTjC0TOcKRC07iPbdhWd88pLHNp46IJ5tQ1mmXN7wqZLw/viewform";
 
     const dataset = [
@@ -374,21 +374,37 @@
         saveToSheet(score, category);
     }
 
-    function saveToSheet(score, category) {
-        const statusEl = document.getElementById("saveStatus");
-        statusEl.className = "save-status saving";
-        statusEl.textContent = "⏳ Saving your responses...";
+   function saveToSheet(score, category) {
+    const statusEl = document.getElementById("saveStatus");
+    statusEl.className = "save-status saving";
+    statusEl.textContent = "⏳ Saving your responses...";
 
-        const payload = {
-            score: score,
-            category: category,
-            q1: getAnswerText(0), q2: getAnswerText(1),
-            q3: getAnswerText(2), q4: getAnswerText(3),
-            q5: getAnswerText(4), q6: getAnswerText(5),
-            q7: getAnswerText(6), q8: getAnswerText(7),
-            q9: getAnswerText(8), q10: getAnswerText(9),
-            q11: getAnswerText(10), q12: getAnswerText(11)
-        };
+    const payload = {
+        score: score,
+        category: category,
+        q1: getAnswerText(0), q2: getAnswerText(1),
+        q3: getAnswerText(2), q4: getAnswerText(3),
+        q5: getAnswerText(4), q6: getAnswerText(5),
+        q7: getAnswerText(6), q8: getAnswerText(7),
+        q9: getAnswerText(8), q10: getAnswerText(9),
+        q11: getAnswerText(10), q12: getAnswerText(11)
+    };
+
+    fetch(WEB_APP_URL, {
+        method: "POST",
+        mode: "no-cors", 
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify(payload)
+    })
+    .then(() => {
+        statusEl.className = "save-status saved";
+        statusEl.textContent = "✅ Responses saved to Google Sheet!";
+    })
+    .catch(() => {
+        statusEl.className = "save-status error";
+        statusEl.textContent = "⚠️ Could not save — please note your answers manually.";
+    });
+}
 
         fetch(WEB_APP_URL, {
             method: "POST",
