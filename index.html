@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Carbon Calculator</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap');
+
+        :root {
+            --green-dark: #1a3c2e;
+            --green-mid: #2e7d32;
+            --green-bright: #4caf50;
+            --green-light: #e8f5e9;
+            --green-glow: #a5d6a7;
+            --bg: #f0f7f1;
+            --card: #ffffff;
+            --text: #1a2e1d;
+            --muted: #6b7f6d;
+            --border: #c8e6c9;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 24px 16px 48px;
+        }
+
+        .site-header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+        .site-header .eyebrow {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 11px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--green-mid);
+            background: var(--green-light);
+            border: 1px solid var(--border);
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 20px;
+            margin-bottom: 10px;
+        }
+        .site-header h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(22px, 5vw, 32px);
+            font-weight: 700;
+            color: var(--green-dark);
+            line-height: 1.2;
+        }
+        .site-header p {
+            font-size: 13px;
+            color: var(--muted);
+            margin-top: 6px;
+        }
+
+        .layout {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 540px;
+            margin: 0 auto;
+        }
+
+        /* Score Panel */
+        .score-panel {
+            background: var(--green-dark);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            position: sticky;
+            top: 16px;
+            z-index: 10;
+            box-shadow: 0 8px 32px rgba(26,60,46,0.18);
+        }
+        .score-label {
+            font-size: 10px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--green-glow);
+            font-weight: 600;
+        }
+        .score-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 42px;
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1;
+            margin: 2px 0;
+        }
+        .score-unit { font-size: 11px; color: var(--green-glow); }
+        .score-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            background: #2d5a38;
+            color: #a5d6a7;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        .score-badge.medium { background: #5a4a1a; color: #fcd34d; }
+        .score-badge.high   { background: #5a1a1a; color: #fca5a5; }
+
+        /* Progress */
+        .progress-wrap {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 14px 18px;
+            border: 1px solid var(--border);
+        }
+        .progress-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .progress-label { font-size: 12px; font-weight: 600; color: var(--green-mid); }
+        .progress-count { font-size: 12px; color: var(--muted); }
+        .progress-track {
+            height: 6px;
+            background: var(--green-light);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--green-mid), var(--green-bright));
+            border-radius: 999px;
+            width: 8.33%;
+            transition: width 0.4s cubic-bezier(.4,0,.2,1);
+        }
+
+        /* Question Card */
+        .question-card {
+            background: var(--card);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .question-body { padding: 20px 20px 10px; }
+        .question-step {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--green-mid);
+            margin-bottom: 6px;
+        }
+        .question-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--green-dark);
+            line-height: 1.4;
+            margin-bottom: 4px;
+        }
+        .question-sub { font-size: 11px; color: var(--muted); margin-bottom: 14px; }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 0 20px 20px;
+        }
+        .option-card {
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.18s ease;
+            font-size: 13px;
+            color: var(--text);
+            background: white;
+        }
+        .option-card:hover { border-color: var(--green-bright); background: var(--green-light); }
+        .option-card.selected { border-color: var(--green-mid); background: var(--green-light); font-weight: 600; color: var(--green-dark); }
+        .option-dot {
+            width: 18px; height: 18px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.18s;
+        }
+        .option-card.selected .option-dot { border-color: var(--green-mid); background: var(--green-mid); }
+        .option-dot::after {
+            content: ''; width: 6px; height: 6px;
+            border-radius: 50%; background: white; opacity: 0; transition: opacity 0.18s;
+        }
+        .option-card.selected .option-dot::after { opacity: 1; }
+        .option-card.multi .option-dot { border-radius: 4px; }
+        .option-card.multi.selected .option-dot::after {
+            content: '✓'; font-size: 10px; font-weight: 700;
+            width: auto; height: auto; border-radius: 0; background: transparent; opacity: 1;
+        }
+
+        /* Navigation */
+        .nav-row { display: flex; gap: 10px; padding: 0 20px 20px; }
+        .btn {
+            padding: 11px 20px; border-radius: 8px; font-weight: 600;
+            font-size: 13px; cursor: pointer; border: none;
+            transition: all 0.18s; font-family: 'Inter', sans-serif;
+        }
+        .btn-back { background: white; border: 2px solid var(--border); color: var(--muted); }
+        .btn-back:hover { border-color: var(--green-mid); color: var(--green-mid); }
+        .btn-next { flex: 1; background: var(--green-mid); color: white; }
+        .btn-next:hover { background: var(--green-dark); }
+        .btn-finish { flex: 1; background: linear-gradient(135deg, #1a3c2e, #2e7d32); color: white; font-size: 14px; }
+        .btn-finish:hover { background: linear-gradient(135deg, #0f2419, #1b5e20); }
+
+        /* Results */
+        .results-screen { display: none; flex-direction: column; gap: 16px; }
+        .results-screen.visible { display: flex; }
+
+        .result-hero {
+            background: var(--green-dark);
+            border-radius: 16px;
+            padding: 28px 24px;
+            text-align: center;
+            color: white;
+        }
+        .hero-label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--green-glow); margin-bottom: 8px; }
+        .hero-score { font-family: 'Space Grotesk', sans-serif; font-size: 72px; font-weight: 700; color: #4ade80; line-height: 1; }
+        .hero-unit { font-size: 14px; color: var(--green-glow); margin-top: 4px; }
+        .hero-badge {
+            display: inline-block; margin-top: 14px; padding: 6px 18px;
+            border-radius: 20px; font-size: 12px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.1em;
+        }
+
+        .breakdown-card {
+            background: var(--card); border-radius: 16px;
+            border: 1px solid var(--border); padding: 18px 20px;
+        }
+        .breakdown-title { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700; color: var(--green-dark); margin-bottom: 14px; }
+        .breakdown-item {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            padding: 8px 0; border-bottom: 1px solid var(--green-light); font-size: 12px; gap: 8px;
+        }
+        .breakdown-item:last-child { border-bottom: none; }
+        .bi-q { color: var(--muted); flex: 1; }
+        .bi-a { font-weight: 600; color: var(--green-dark); text-align: right; font-size: 11px; max-width: 45%; }
+
+        /* Copy + Form CTA */
+        .form-cta {
+            background: linear-gradient(135deg, #e8f5e9, #f0f7f1);
+            border: 2px solid var(--green-mid);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+        }
+        .form-cta h3 { font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 700; color: var(--green-dark); margin-bottom: 6px; }
+        .form-cta p { font-size: 12px; color: var(--muted); margin-bottom: 16px; line-height: 1.6; }
+
+        .copy-score-box {
+            background: var(--green-dark);
+            border-radius: 12px;
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+        .csb-left {}
+        .csb-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--green-glow); margin-bottom: 2px; }
+        .csb-value { font-family: 'Space Grotesk', sans-serif; font-size: 30px; font-weight: 700; color: #4ade80; line-height: 1; }
+        .csb-unit { font-size: 10px; color: var(--green-glow); }
+
+        .btn-copy {
+            background: var(--green-mid); color: white; border: none;
+            padding: 10px 16px; border-radius: 8px; font-weight: 700;
+            font-size: 13px; cursor: pointer; font-family: 'Inter', sans-serif;
+            white-space: nowrap; transition: background 0.2s; flex-shrink: 0;
+        }
+        .btn-copy:hover { background: #1b5e20; }
+        .btn-copy.copied { background: #388e3c; }
+
+        .step-instructions {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px 16px;
+            text-align: left;
+            margin-bottom: 14px;
+        }
+        .step-instructions p {
+            font-size: 12px; color: var(--text);
+            margin-bottom: 0; line-height: 1.7;
+        }
+        .step-instructions strong { color: var(--green-dark); }
+
+        .btn-form {
+            display: block; width: 100%;
+            background: var(--green-mid); color: white;
+            padding: 13px 28px; border-radius: 10px;
+            font-weight: 700; font-size: 14px;
+            border: none; cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: background 0.2s; text-align: center;
+        }
+        .btn-form:hover { background: var(--green-dark); }
+
+        .btn-retake {
+            width: 100%; background: white;
+            border: 2px solid var(--border); color: var(--muted);
+            padding: 11px; border-radius: 10px; font-weight: 600;
+            font-size: 13px; cursor: pointer; font-family: 'Inter', sans-serif;
+        }
+        .btn-retake:hover { border-color: var(--green-mid); color: var(--green-mid); }
+
+        .toast {
+            position: fixed; bottom: 24px; left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: var(--green-dark); color: white;
+            padding: 12px 22px; border-radius: 10px;
+            font-size: 13px; font-weight: 500;
+            transition: transform 0.3s ease; z-index: 999; white-space: nowrap;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+    </style>
+</head>
+<body>
+
+<div class="site-header">
+    <div class="eyebrow">CSP · Academic Year 2026–27</div>
+    <h1>Campus Carbon Calculator</h1>
+    <p>See how your daily college habits affect the planet</p>
+</div>
+
+<div class="layout">
+
+    <!-- Live Score -->
+    <div class="score-panel">
+        <div>
+            <div class="score-label">Live Carbon Score</div>
+            <div class="score-value" id="liveScore">0.00</div>
+            <div class="score-unit">tons of CO₂ / year</div>
+        </div>
+        <div class="score-badge" id="scoreBadge">Low Impact ✨</div>
+    </div>
+
+    <!-- Progress -->
+    <div class="progress-wrap" id="progressWrap">
+        <div class="progress-top">
+            <span class="progress-label">Your Progress</span>
+            <span class="progress-count" id="progressCount">Question 1 of 12</span>
+        </div>
+        <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+    </div>
+
+    <!-- Question Card -->
+    <div class="question-card" id="questionCard">
+        <div class="question-body" id="questionBody"></div>
+        <div class="options-list" id="optionsList"></div>
+        <div class="nav-row">
+            <button class="btn btn-back" id="btnBack" onclick="navigate(-1)">← Back</button>
+            <button class="btn btn-next" id="btnNext" onclick="navigate(1)">Next →</button>
+        </div>
+    </div>
+
+    <!-- Results Screen -->
+    <div class="results-screen" id="resultsScreen">
+
+        <div class="result-hero">
+            <div class="hero-label">Your Carbon Footprint Result</div>
+            <div class="hero-score" id="heroScore">0.00</div>
+            <div class="hero-unit">metric tons of CO₂ per year</div>
+            <span class="hero-badge" id="heroBadge" style="background:#2d5a38;color:#a5d6a7;">Low Impact ✨</span>
+        </div>
+
+        <div class="breakdown-card">
+            <div class="breakdown-title">📋 Your 12 Answers Summary</div>
+            <div id="breakdownList"></div>
+        </div>
+
+        <div class="form-cta">
+            <h3>📝 Submit to Google Form</h3>
+            <p>Copy your carbon score below, then open the Google Form and paste it into the score field.</p>
+
+            <!-- Big copy box -->
+            <div class="copy-score-box">
+                <div class="csb-left">
+                    <div class="csb-label">Your Carbon Score — Copy This!</div>
+                    <div class="csb-value" id="copyScoreVal">0.00</div>
+                    <div class="csb-unit">metric tons of CO₂ / year</div>
+                </div>
+                <button class="btn-copy" id="btnCopy" onclick="copyScore()">📋 Copy</button>
+            </div>
+
+            <!-- Step instructions -->
+            <div class="step-instructions">
+                <p>
+                    <strong>Step 1:</strong> Click <strong>📋 Copy</strong> above to copy your score<br>
+                    <strong>Step 2:</strong> Click <strong>Open Google Form</strong> below<br>
+                    <strong>Step 3:</strong> Paste your score into the Carbon Score field<br>
+                    <strong>Step 4:</strong> Fill in the remaining questions and submit!
+                </p>
+            </div>
+
+            <button class="btn-form" onclick="openForm()">🚀 Open Google Form</button>
+        </div>
+
+        <button class="btn-retake" onclick="retake()">↺ Retake Calculator</button>
+    </div>
+
+</div>
+
+<div class="toast" id="toast">Copied to clipboard! 📋</div>
+
+<script>
+    const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdMeDTjC0TOcKRC07iPbdhWd88pLHNp46IJ5tQ1mmXN7wqZLw/viewform";
+
+    const dataset = [
+        {
+            q: "Where do you live?",
+            type: "single",
+            opts: [
+                { t: "Shared Hostel Room", w: 0.80 },
+                { t: "Single Hostel Room", w: 1.50 },
+                { t: "Day Scholar (Commuting from home)", w: 2.10 }
+            ]
+        },
+        {
+            q: "How much do you use the Air Conditioner (AC)?",
+            type: "single",
+            opts: [
+                { t: "Rarely or never (Less than 2 hours/day)", w: 0.40 },
+                { t: "Normal use (4 to 8 hours/day)", w: 1.90 },
+                { t: "Heavy use (Over 12 hours or all night long)", w: 4.20 }
+            ]
+        },
+        {
+            q: "Do you turn off lights/fans when leaving your room?",
+            type: "single",
+            opts: [
+                { t: "Always turn everything off", w: 0.10 },
+                { t: "Sometimes forget short-term items", w: 0.60 },
+                { t: "Frequently leave them running", w: 1.40 }
+            ]
+        },
+        {
+            q: "Which heavy appliances do you use regularly?",
+            sub: "Select all that apply:",
+            type: "multiple",
+            opts: [
+                { t: "Electric Water Heater / Kettle", w: 0.80 },
+                { t: "Induction Cooktop / Induction Stove", w: 1.10 },
+                { t: "Personal Room Refrigerator", w: 0.90 },
+                { t: "Gaming PC Setup / External Monitor", w: 0.70 },
+                { t: "None of these (Only charge phone/laptop)", w: 0.20 }
+            ]
+        },
+        {
+            q: "How do you travel around campus or local town?",
+            type: "single",
+            opts: [
+                { t: "Walking or Bicycle", w: 0.00 },
+                { t: "Campus Bus / Auto / Metro", w: 0.50 },
+                { t: "Personal Bike or Private Car", w: 2.60 }
+            ]
+        },
+        {
+            q: "How do you usually travel long distances back home?",
+            type: "single",
+            opts: [
+                { t: "Overland local options (Trains or State Buses)", w: 0.60 },
+                { t: "Occasional long distance travel (1–2 times/year)", w: 2.40 },
+                { t: "Frequent long distance travel (Multiple times/semester)", w: 5.40 }
+            ]
+        },
+        {
+            q: "What are your typical eating habits?",
+            type: "single",
+            opts: [
+                { t: "Pure Veg", w: 0.90 },
+                { t: "Occasional Non-Veg", w: 1.80 },
+                { t: "Regular Non-Veg", w: 3.40 }
+            ]
+        },
+        {
+            q: "How often do you order food deliveries or online packages?",
+            type: "single",
+            opts: [
+                { t: "Rarely (Eat mostly at the mess halls)", w: 0.20 },
+                { t: "Occasional (1 to 3 times/week)", w: 1.10 },
+                { t: "Very often (Almost every single day)", w: 2.70 }
+            ]
+        },
+        {
+            q: "What is your average daily mobile phone screen time?",
+            type: "single",
+            opts: [
+                { t: "Low user (Less than 3 hours/day)", w: 0.20 },
+                { t: "Average user (3 to 6 hours/day)", w: 0.60 },
+                { t: "Heavy user (More than 6 hours/day)", w: 1.20 }
+            ]
+        },
+        {
+            q: "How much time do you spend watching high-quality videos daily?",
+            sub: "Includes YouTube, Reels, Instagram, Netflix, Hotstar:",
+            type: "single",
+            opts: [
+                { t: "Light streaming (Less than 1 hour/day)", w: 0.20 },
+                { t: "Moderate streaming (1 to 3 hours/day)", w: 0.70 },
+                { t: "Heavy streaming (Over 3 hours/day)", w: 1.40 }
+            ]
+        },
+        {
+            q: "How do you manage your digital storage & phone data?",
+            type: "single",
+            opts: [
+                { t: "Keep it clean (Regularly delete old chats, files, emails)", w: 0.10 },
+                { t: "Standard cloud storage (Auto-backup active)", w: 0.50 },
+                { t: "Heavy continuous data loads (Massive cloud & streams)", w: 1.10 }
+            ]
+        },
+        {
+            q: "How do you handle plastic cups, bottles, or packaging?",
+            type: "single",
+            opts: [
+                { t: "Use refillable bottles & recycle properly", w: 0.10 },
+                { t: "Use single-use items and throw in any open bin", w: 0.90 },
+                { t: "Rely heavily on plastic packaging daily", w: 2.10 }
+            ]
+        }
+    ];
+
+    let currentIdx = 0;
+    let selections = dataset.map(d => d.type === "multiple" ? [] : null);
+
+    function render() {
+        const d = dataset[currentIdx];
+        const isMulti = d.type === "multiple";
+
+        document.getElementById("questionBody").innerHTML = `
+            <div class="question-step">Question ${currentIdx + 1} of ${dataset.length}</div>
+            <div class="question-title">${d.q}</div>
+            ${d.sub ? `<div class="question-sub">${d.sub}</div>` : ''}
+        `;
+
+        document.getElementById("optionsList").innerHTML = d.opts.map((opt, i) => {
+            const sel = isMulti ? selections[currentIdx].includes(i) : selections[currentIdx] === i;
+            return `
+                <div class="option-card ${isMulti ? 'multi' : ''} ${sel ? 'selected' : ''}" onclick="pick(${i})">
+                    <div class="option-dot"></div>
+                    <span>${opt.t}</span>
+                </div>`;
+        }).join('');
+
+        const pct = ((currentIdx + 1) / dataset.length) * 100;
+        document.getElementById("progressFill").style.width = pct + "%";
+        document.getElementById("progressCount").textContent = `Question ${currentIdx + 1} of ${dataset.length}`;
+        document.getElementById("btnBack").style.display = currentIdx === 0 ? "none" : "block";
+
+        const nb = document.getElementById("btnNext");
+        if (currentIdx === dataset.length - 1) {
+            nb.textContent = "See My Results ✓";
+            nb.className = "btn btn-finish";
+        } else {
+            nb.textContent = "Next →";
+            nb.className = "btn btn-next";
+        }
+    }
+
+    function pick(i) {
+        const d = dataset[currentIdx];
+        if (d.type === "multiple") {
+            const arr = selections[currentIdx];
+            const pos = arr.indexOf(i);
+            if (pos > -1) arr.splice(pos, 1); else arr.push(i);
+        } else {
+            selections[currentIdx] = i;
+        }
+        updateScore();
+        render();
+    }
+
+    function updateScore() {
+        let total = 0;
+        selections.forEach((sel, qi) => {
+            if (sel === null) return;
+            if (Array.isArray(sel)) sel.forEach(idx => total += dataset[qi].opts[idx].w);
+            else total += dataset[qi].opts[sel].w;
+        });
+        const s = total.toFixed(2);
+        document.getElementById("liveScore").textContent = s;
+        const badge = document.getElementById("scoreBadge");
+        if (total < 8) { badge.textContent = "Low Impact ✨"; badge.className = "score-badge"; }
+        else if (total < 18) { badge.textContent = "Medium Impact ⚠️"; badge.className = "score-badge medium"; }
+        else { badge.textContent = "High Impact 🚨"; badge.className = "score-badge high"; }
+        return total;
+    }
+
+    function navigate(step) {
+        if (step === 1) {
+            const sel = selections[currentIdx];
+            if (sel === null || (Array.isArray(sel) && sel.length === 0)) {
+                showToast("Please select an answer to continue!");
+                return;
+            }
+        }
+        if (currentIdx === dataset.length - 1 && step === 1) { showResults(); return; }
+        currentIdx += step;
+        render();
+    }
+
+    function showResults() {
+        const total = updateScore();
+        const score = total.toFixed(2);
+
+        document.getElementById("progressWrap").style.display = "none";
+        document.getElementById("questionCard").style.display = "none";
+        document.getElementById("resultsScreen").classList.add("visible");
+
+        document.getElementById("heroScore").textContent = score;
+        document.getElementById("copyScoreVal").textContent = score;
+
+        const heroBadge = document.getElementById("heroBadge");
+        if (total < 8) { heroBadge.textContent = "Low Impact ✨"; heroBadge.style.background = "#2d5a38"; heroBadge.style.color = "#a5d6a7"; }
+        else if (total < 18) { heroBadge.textContent = "Medium Impact ⚠️"; heroBadge.style.background = "#5a4a1a"; heroBadge.style.color = "#fcd34d"; }
+        else { heroBadge.textContent = "High Impact 🚨"; heroBadge.style.background = "#5a1a1a"; heroBadge.style.color = "#fca5a5"; }
+
+        document.getElementById("breakdownList").innerHTML = selections.map((sel, qi) => {
+            const d = dataset[qi];
+            let ans = "—";
+            if (Array.isArray(sel) && sel.length > 0) ans = sel.map(i => d.opts[i].t).join(", ");
+            else if (sel !== null) ans = d.opts[sel].t;
+            return `<div class="breakdown-item"><span class="bi-q">Q${qi+1}. ${d.q}</span><span class="bi-a">${ans}</span></div>`;
+        }).join('');
+    }
+
+    function copyScore() {
+        const score = document.getElementById("copyScoreVal").textContent;
+        navigator.clipboard.writeText(score).then(() => {
+            const btn = document.getElementById("btnCopy");
+            btn.textContent = "✅ Copied!";
+            btn.classList.add("copied");
+            showToast("Score copied! Now open the Google Form and paste it.");
+            setTimeout(() => { btn.textContent = "📋 Copy"; btn.classList.remove("copied"); }, 2500);
+        }).catch(() => {
+            // Fallback for older browsers
+            const el = document.createElement("textarea");
+            el.value = score;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand("copy");
+            document.body.removeChild(el);
+            showToast("Score copied! Now paste it in the Google Form.");
+        });
+    }
+
+    function openForm() {
+        window.open(FORM_URL, "_blank");
+    }
+
+    function retake() {
+        currentIdx = 0;
+        selections = dataset.map(d => d.type === "multiple" ? [] : null);
+        document.getElementById("liveScore").textContent = "0.00";
+        document.getElementById("scoreBadge").textContent = "Low Impact ✨";
+        document.getElementById("scoreBadge").className = "score-badge";
+        document.getElementById("progressWrap").style.display = "block";
+        document.getElementById("questionCard").style.display = "block";
+        document.getElementById("resultsScreen").classList.remove("visible");
+        render();
+    }
+
+    function showToast(msg) {
+        const t = document.getElementById("toast");
+        t.textContent = msg;
+        t.classList.add("show");
+        setTimeout(() => t.classList.remove("show"), 3000);
+    }
+
+    render();
+</script>
+</body>
+</html>
