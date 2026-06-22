@@ -263,7 +263,7 @@
 <div class="toast" id="toast">Copied!</div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxBIoZUyVwpiTTA97WdLLzP9JS_JncsxEL4sjGz6958zCQcvYidjywN2MlRbmBpU6cD/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx3zXcfOV9jTk9RPeGr9jOR7YQVYouuRMwo8uIMfc5L_hF7gpV0gjdVq721J2xX8xV20A/exec";
     const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdMeDTjC0TOcKRC07iPbdhWd88pLHNp46IJ5tQ1mmXN7wqZLw/viewform";
 
     const dataset = [
@@ -370,77 +370,51 @@
             return `<div class="breakdown-item"><span class="bi-q">Q${qi+1}. ${dataset[qi].q}</span><span class="bi-a">${getAnswerText(qi)}</span></div>`;
         }).join('');
 
-        // Save to Google Sheet
         saveToSheet(score, category);
     }
 
-  js
-function saveToSheet(score, category) {
-    const statusEl = document.getElementById("saveStatus");
-    statusEl.className = "save-status saving";
-    statusEl.textContent = "⏳ Saving your responses...";
+    function saveToSheet(score, category) {
+        const statusEl = document.getElementById("saveStatus");
+        statusEl.className = "save-status saving";
+        statusEl.textContent = "⏳ Saving your responses...";
 
-    const payload = {
-        score: score,
-        category: category,
-        q1: getAnswerText(0), q2: getAnswerText(1),
-        q3: getAnswerText(2), q4: getAnswerText(3),
-        q5: getAnswerText(4), q6: getAnswerText(5),
-        q7: getAnswerText(6), q8: getAnswerText(7),
-        q9: getAnswerText(8), q10: getAnswerText(9),
-        q11: getAnswerText(10), q12: getAnswerText(11)
-    };
+        const payload = {
+            score: score,
+            category: category,
+            q1: getAnswerText(0), q2: getAnswerText(1),
+            q3: getAnswerText(2), q4: getAnswerText(3),
+            q5: getAnswerText(4), q6: getAnswerText(5),
+            q7: getAnswerText(6), q8: getAnswerText(7),
+            q9: getAnswerText(8), q10: getAnswerText(9),
+            q11: getAnswerText(10), q12: getAnswerText(11)
+        };
 
-    // THIS IS THE FIX: Added 'no-cors' and 'text/plain'
-    fetch("https://script.google.com/macros/s/AKfycbxBIoZUyVwpiTTA97WdLLzP9JS_JncsxEL4sjGz6958zCQcvYidjywN2MlRbmBpU6cD/exec", {
-        method: "POST",
-        mode: "no-cors", 
-        headers: { "Content-Type": "text/plain" },
-        body: JSON.stringify(payload)
-    })
-    .then(() => {
-        statusEl.className = "save-status saved";
-        statusEl.textContent = "✅ Responses saved to Google Sheet!";
-    })
-    .catch(() => {
-        statusEl.className = "save-status error";
-        statusEl.textContent = "⚠️ Could not save — please note your answers manually.";
-    });
-}
-
-    fetch(WEB_APP_URL, {
-        method: "POST",
-        mode: "no-cors", 
-        headers: { "Content-Type": "text/plain" },
-        body: JSON.stringify(payload)
-    })
-    .then(() => {
-        statusEl.className = "save-status saved";
-        statusEl.textContent = "✅ Responses saved to Google Sheet!";
-    })
-    .catch(() => {
-        statusEl.className = "save-status error";
-        statusEl.textContent = "⚠️ Could not save — please note your answers manually.";
-    });
-}
+        // no-cors means we can't read the response body — any .then() means
+        // the request was sent successfully. Only .catch() means a network error.
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 10000); // 10s timeout
 
         fetch(WEB_APP_URL, {
             method: "POST",
-            body: JSON.stringify(payload)
+            mode: "no-cors",
+            headers: { "Content-Type": "text/plain" },
+            body: JSON.stringify(payload),
+            signal: controller.signal
         })
-        .then(res => res.json())
-        .then(data => {
-            if (data.status === "success") {
-                statusEl.className = "save-status saved";
-                statusEl.textContent = "✅ Responses saved to Google Sheet!";
+        .then(() => {
+            clearTimeout(timeout);
+            statusEl.className = "save-status saved";
+            statusEl.textContent = "✅ Responses saved to Google Sheet!";
+        })
+        .catch((err) => {
+            clearTimeout(timeout);
+            if (err.name === "AbortError") {
+                statusEl.className = "save-status error";
+                statusEl.textContent = "⚠️ Request timed out — check your internet and try retaking.";
             } else {
                 statusEl.className = "save-status error";
-                statusEl.textContent = "⚠️ Could not save — please note your answers manually.";
+                statusEl.textContent = "⚠️ Network error — check your internet connection.";
             }
-        })
-        .catch(() => {
-            statusEl.className = "save-status error";
-            statusEl.textContent = "⚠️ Could not save — please note your answers manually.";
         });
     }
 
