@@ -226,6 +226,12 @@
             <div class="save-status saving" id="saveStatus">⏳ Saving your responses...</div>
         </div>
 
+        <div style="background:white;border:1px solid var(--border);border-radius:12px;padding:14px 18px;text-align:center;">
+            <p style="font-size:11px;color:var(--muted);margin-bottom:10px;">Not seeing data in your sheet? Test the connection:</p>
+            <button onclick="testConnection()" style="background:var(--green-mid);color:white;border:none;padding:9px 20px;border-radius:8px;font-weight:600;font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;">🔌 Send Test Row to Sheet</button>
+            <div id="testStatus" style="font-size:11px;margin-top:8px;color:var(--muted);"></div>
+        </div>
+
         <div class="breakdown-card">
             <div class="breakdown-title">📋 Your 12 Answers Summary</div>
             <div id="breakdownList"></div>
@@ -263,7 +269,7 @@
 <div class="toast" id="toast">Copied!</div>
 
 <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx3zXcfOV9jTk9RPeGr9jOR7YQVYouuRMwo8uIMfc5L_hF7gpV0gjdVq721J2xX8xV20A/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxaqgFSWEHgmFEWDieyncGluJfldxWmImnIvHvrmSWQkLA293kfi06QcDgkKclZUl5vug/exec";
     const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdMeDTjC0TOcKRC07iPbdhWd88pLHNp46IJ5tQ1mmXN7wqZLw/viewform";
 
     const dataset = [
@@ -455,6 +461,35 @@
         t.textContent = msg;
         t.classList.add("show");
         setTimeout(() => t.classList.remove("show"), 3000);
+    }
+
+    function testConnection() {
+        const el = document.getElementById("testStatus");
+        el.style.color = "#b45309";
+        el.textContent = "⏳ Sending test row...";
+
+        const testPayload = {
+            score: "TEST",
+            category: "TEST ROW — DELETE ME",
+            q1:"Test",q2:"Test",q3:"Test",q4:"Test",
+            q5:"Test",q6:"Test",q7:"Test",q8:"Test",
+            q9:"Test",q10:"Test",q11:"Test",q12:"Test"
+        };
+
+        fetch(WEB_APP_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "text/plain" },
+            body: JSON.stringify(testPayload)
+        })
+        .then(() => {
+            el.style.color = "#1b5e20";
+            el.textContent = "✅ Request sent! Check your Google Sheet for a TEST row now.";
+        })
+        .catch(() => {
+            el.style.color = "#991b1b";
+            el.textContent = "❌ Failed — Apps Script URL may be wrong or access is restricted.";
+        });
     }
 
     render();
