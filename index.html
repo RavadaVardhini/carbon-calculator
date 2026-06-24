@@ -1,951 +1,937 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Carbon Footprint Calculator</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
 
-  :root {
-    --green-deep: #1a3a2a;
-    --green-mid: #2d6a4f;
-    --green-bright: #52b788;
-    --leaf: #74c69d;
-    --sky: #d8f3dc;
-    --earth: #f4a261;
-    --warn: #e76f51;
-    --bg: #f0faf3;
-    --card: #ffffff;
-    --text: #1a1a2e;
-    --muted: #6b7c74;
-    --border: #c8e6c9;
-    --radius: 16px;
-  }
+:root {
+  --green: #2d6a4f;
+  --green-light: #52b788;
+  --green-bg: #d8f3dc;
+  --yellow: #f4a261;
+  --red: #e76f51;
+  --bg: #f0faf3;
+  --white: #ffffff;
+  --text: #1a1a2e;
+  --muted: #6b7c74;
+  --border: #c8e6c9;
+  --radius: 14px;
+}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-  body {
-    font-family: 'Inter', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-  }
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+}
 
-  /* HERO */
-  .hero {
-    background: linear-gradient(135deg, var(--green-deep) 0%, var(--green-mid) 60%, #40916c 100%);
-    color: white;
-    padding: 60px 24px 80px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-  .hero::before {
-    content: '';
-    position: absolute;
-    width: 400px; height: 400px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.04);
-    top: -100px; right: -100px;
-  }
-  .hero::after {
-    content: '';
-    position: absolute;
-    width: 200px; height: 200px;
-    border-radius: 50%;
-    background: rgba(116,198,157,0.15);
-    bottom: -60px; left: 40px;
-  }
-  .hero-eyebrow {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--leaf);
-    margin-bottom: 16px;
-  }
-  .hero h1 {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: clamp(2rem, 5vw, 3.2rem);
-    font-weight: 700;
-    line-height: 1.15;
-    margin-bottom: 16px;
-  }
-  .hero h1 span { color: var(--leaf); }
-  .hero p {
-    font-size: 1.05rem;
-    color: rgba(255,255,255,0.75);
-    max-width: 500px;
-    margin: 0 auto 32px;
-    line-height: 1.6;
-  }
-  .step-pills {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-  .pill {
-    background: rgba(255,255,255,0.12);
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 100px;
-    padding: 6px 16px;
-    font-size: 13px;
-    color: rgba(255,255,255,0.85);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .pill .num {
-    background: var(--leaf);
-    color: var(--green-deep);
-    border-radius: 50%;
-    width: 18px; height: 18px;
-    font-size: 11px;
-    font-weight: 700;
-    display: flex; align-items: center; justify-content: center;
-  }
+/* HERO */
+.hero {
+  background: linear-gradient(135deg, #1a3a2a, #2d6a4f);
+  color: white;
+  text-align: center;
+  padding: 48px 20px 56px;
+}
+.hero-tag {
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #74c69d;
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+.hero h1 {
+  font-size: clamp(1.6rem, 5vw, 2.6rem);
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 10px;
+}
+.hero h1 span { color: #74c69d; }
+.hero p {
+  font-size: 0.95rem;
+  color: rgba(255,255,255,0.72);
+  max-width: 420px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
 
-  /* PROGRESS BAR */
-  .progress-wrap {
-    background: white;
-    border-bottom: 1px solid var(--border);
-    padding: 14px 24px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-  .progress-label {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--muted);
-    margin-bottom: 6px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-  .progress-bar {
-    background: var(--sky);
-    border-radius: 100px;
-    height: 6px;
-    overflow: hidden;
-  }
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--green-mid), var(--leaf));
-    border-radius: 100px;
-    transition: width 0.5s ease;
-    width: 0%;
-  }
+/* PROGRESS */
+.prog-bar-wrap {
+  background: white;
+  border-bottom: 1px solid var(--border);
+  padding: 12px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 99;
+}
+.prog-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 5px;
+}
+.prog-track {
+  background: var(--green-bg);
+  border-radius: 100px;
+  height: 6px;
+}
+.prog-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--green), var(--green-light));
+  border-radius: 100px;
+  transition: width 0.4s ease;
+  width: 0%;
+}
 
-  /* SECTIONS */
-  .section { display: none; }
-  .section.active { display: block; }
+/* SECTIONS */
+.section { display: none; }
+.section.active { display: block; }
 
-  .container {
-    max-width: 680px;
-    margin: 0 auto;
-    padding: 40px 20px 80px;
-  }
+.wrap {
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 32px 18px 72px;
+}
 
-  .section-label {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--green-mid);
-    margin-bottom: 8px;
-  }
-  .section-title {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 1.7rem;
-    font-weight: 700;
-    color: var(--green-deep);
-    margin-bottom: 8px;
-    line-height: 1.25;
-  }
-  .section-desc {
-    color: var(--muted);
-    font-size: 0.95rem;
-    line-height: 1.6;
-    margin-bottom: 32px;
-  }
+.sec-tag {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 6px;
+}
+.sec-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #1a3a2a;
+  margin-bottom: 6px;
+}
+.sec-desc {
+  font-size: 0.88rem;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 28px;
+}
 
-  /* CARDS */
-  .card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 24px;
-    margin-bottom: 16px;
-  }
-  .card-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
-  }
-  .card-icon {
-    width: 40px; height: 40px;
-    border-radius: 10px;
-    background: var(--sky);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 20px;
-    flex-shrink: 0;
-  }
-  .card-title {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--green-deep);
-  }
-  .card-sub { font-size: 12px; color: var(--muted); }
+/* CARD */
+.card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 14px;
+}
+.card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.card-icon {
+  width: 38px; height: 38px;
+  background: var(--green-bg);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.card-title { font-size: 0.95rem; font-weight: 700; color: #1a3a2a; }
+.card-sub { font-size: 11px; color: var(--muted); }
 
-  /* FORM ELEMENTS */
-  .field { margin-bottom: 16px; }
-  .field label {
-    display: block;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text);
-    margin-bottom: 6px;
-  }
-  .field input, .field select {
-    width: 100%;
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
-    padding: 10px 14px;
-    font-size: 14px;
-    font-family: 'Inter', sans-serif;
-    color: var(--text);
-    background: white;
-    outline: none;
-    transition: border-color 0.2s;
-    -webkit-appearance: none;
-  }
-  .field input:focus, .field select:focus {
-    border-color: var(--green-mid);
-  }
-  .field .hint { font-size: 11px; color: var(--muted); margin-top: 4px; }
+/* FIELDS */
+.field { margin-bottom: 14px; }
+.field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 5px;
+}
+.field select, .field input {
+  width: 100%;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 14px;
+  font-family: 'Nunito', sans-serif;
+  color: var(--text);
+  background: white;
+  outline: none;
+  -webkit-appearance: none;
+  transition: border-color 0.2s;
+}
+.field select:focus, .field input:focus {
+  border-color: var(--green);
+}
+.field select option[value=""] { color: #aaa; }
 
-  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+/* BUTTONS */
+.btn {
+  width: 100%;
+  background: linear-gradient(135deg, var(--green), var(--green-light));
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 15px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+  letter-spacing: 0.3px;
+}
+.btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
 
-  /* BUTTONS */
-  .btn-primary {
-    width: 100%;
-    background: linear-gradient(135deg, var(--green-mid), var(--green-bright));
-    color: white;
-    border: none;
-    border-radius: 12px;
-    padding: 16px 24px;
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.2s, transform 0.1s;
-    letter-spacing: 0.5px;
-  }
-  .btn-primary:hover { opacity: 0.92; transform: translateY(-1px); }
-  .btn-primary:active { transform: translateY(0); }
-  .btn-secondary {
-    background: transparent;
-    color: var(--green-mid);
-    border: 1.5px solid var(--green-mid);
-    border-radius: 12px;
-    padding: 12px 24px;
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s;
-    width: 100%;
-    margin-top: 10px;
-  }
-  .btn-secondary:hover { background: var(--sky); }
+/* RESULT */
+.result-box {
+  background: linear-gradient(135deg, #1a3a2a, #2d6a4f);
+  border-radius: var(--radius);
+  padding: 32px 20px;
+  text-align: center;
+  color: white;
+  margin-bottom: 20px;
+}
+.result-label { font-size: 12px; color: #74c69d; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
+.result-num {
+  font-size: 3.6rem;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.result-unit { font-size: 14px; color: rgba(255,255,255,0.65); margin-bottom: 18px; }
+.result-badge {
+  display: inline-block;
+  padding: 7px 18px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 700;
+}
+.badge-low { background: #52b788; }
+.badge-mid { background: var(--yellow); }
+.badge-high { background: var(--red); }
 
-  /* RESULT */
-  .result-hero {
-    background: linear-gradient(135deg, var(--green-deep), var(--green-mid));
-    border-radius: var(--radius);
-    padding: 40px 24px;
-    text-align: center;
-    color: white;
-    margin-bottom: 24px;
-    position: relative;
-    overflow: hidden;
-  }
-  .result-hero::before {
-    content: '🌍';
-    font-size: 80px;
-    position: absolute;
-    top: -10px; right: -10px;
-    opacity: 0.15;
-  }
-  .result-label { font-size: 13px; color: var(--leaf); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
-  .result-number {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 4rem;
-    font-weight: 700;
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-  .result-unit { font-size: 16px; color: rgba(255,255,255,0.7); margin-bottom: 20px; }
-  .result-badge {
-    display: inline-block;
-    padding: 8px 20px;
-    border-radius: 100px;
-    font-size: 14px;
-    font-weight: 600;
-  }
-  .badge-low { background: #52b788; color: white; }
-  .badge-medium { background: var(--earth); color: white; }
-  .badge-high { background: var(--warn); color: white; }
+.grid4 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.mini-card {
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  text-align: center;
+}
+.mini-icon { font-size: 22px; margin-bottom: 4px; }
+.mini-val { font-size: 1.1rem; font-weight: 800; color: #1a3a2a; }
+.mini-cat { font-size: 11px; color: var(--muted); margin-top: 2px; }
 
-  .breakdown-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    margin-bottom: 24px;
-  }
-  .breakdown-item {
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px;
-    text-align: center;
-  }
-  .breakdown-icon { font-size: 24px; margin-bottom: 6px; }
-  .breakdown-val {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--green-deep);
-  }
-  .breakdown-cat { font-size: 12px; color: var(--muted); margin-top: 2px; }
+/* STATUS */
+.status {
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 14px;
+  display: none;
+}
+.status.ok  { background: #d8f3dc; color: #1b4332; display: block; }
+.status.err { background: #ffe5e0; color: #7d1a1a; display: block; }
+.status.loading { background: #e8f4fd; color: #023e8a; display: block; }
 
-  /* INFOGRAPHIC CARDS */
-  .info-card {
-    border-radius: var(--radius);
-    padding: 28px 24px;
-    margin-bottom: 16px;
-    position: relative;
-    overflow: hidden;
-  }
-  .info-card.green { background: linear-gradient(135deg, #1b4332, #2d6a4f); color: white; }
-  .info-card.amber { background: linear-gradient(135deg, #7b3f00, #d4862b); color: white; }
-  .info-card.blue  { background: linear-gradient(135deg, #023e8a, #0077b6); color: white; }
-  .info-card.red   { background: linear-gradient(135deg, #7d1a1a, #c1440e); color: white; }
-  .info-card.teal  { background: linear-gradient(135deg, #004d40, #00897b); color: white; }
+/* NOTICE BOX */
+.notice {
+  background: #fff8e1;
+  border: 2px solid #f4a261;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #5a3e00;
+}
+.notice strong { font-size: 14px; display: block; margin-bottom: 4px; }
 
-  .info-big {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 3.5rem;
-    font-weight: 700;
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-  .info-unit { font-size: 14px; opacity: 0.75; margin-bottom: 12px; }
-  .info-text { font-size: 0.95rem; line-height: 1.6; opacity: 0.9; }
-  .info-emoji {
-    position: absolute;
-    right: 20px; top: 20px;
-    font-size: 48px;
-    opacity: 0.25;
-  }
-  .info-tag {
-    display: inline-block;
-    background: rgba(255,255,255,0.15);
-    border-radius: 100px;
-    padding: 4px 12px;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-  }
+/* INFOGRAPHIC CARDS */
+.info-card {
+  border-radius: var(--radius);
+  padding: 24px 20px;
+  margin-bottom: 14px;
+  position: relative;
+  overflow: hidden;
+  color: white;
+}
+.ic-green { background: linear-gradient(135deg, #1b4332, #2d6a4f); }
+.ic-amber { background: linear-gradient(135deg, #7b3f00, #d4862b); }
+.ic-blue  { background: linear-gradient(135deg, #023e8a, #0077b6); }
+.ic-red   { background: linear-gradient(135deg, #7d1a1a, #c1440e); }
+.ic-teal  { background: linear-gradient(135deg, #004d40, #00897b); }
+.ic-purple{ background: linear-gradient(135deg, #4a0072, #7b2ff7); }
 
-  .tip-list { list-style: none; }
-  .tip-list li {
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 0.9rem;
-    color: var(--text);
-    line-height: 1.5;
-  }
-  .tip-list li:last-child { border-bottom: none; }
-  .tip-list .tip-dot {
-    width: 8px; height: 8px;
-    background: var(--green-bright);
-    border-radius: 50%;
-    flex-shrink: 0;
-    margin-top: 6px;
-  }
+.ic-emoji {
+  position: absolute;
+  right: 16px; top: 16px;
+  font-size: 44px;
+  opacity: 0.2;
+}
+.ic-tag {
+  display: inline-block;
+  background: rgba(255,255,255,0.18);
+  border-radius: 100px;
+  padding: 3px 10px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.ic-big {
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+.ic-unit { font-size: 13px; opacity: 0.72; margin-bottom: 10px; }
+.ic-text { font-size: 0.88rem; line-height: 1.6; opacity: 0.9; }
 
-  /* SUBMIT STATUS */
-  .status-box {
-    border-radius: 10px;
-    padding: 14px 16px;
-    font-size: 13px;
-    font-weight: 500;
-    margin-bottom: 16px;
-    display: none;
-  }
-  .status-box.success { background: #d8f3dc; color: #1b4332; display: block; }
-  .status-box.error   { background: #ffe5e0; color: #7d1a1a; display: block; }
-  .status-box.loading { background: #e8f4fd; color: #023e8a; display: block; }
+/* CHECKLIST */
+.check-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  user-select: none;
+}
+.check-item.done {
+  border-color: var(--green);
+  background: #f0faf3;
+  color: var(--green);
+}
+.check-box {
+  width: 22px; height: 22px;
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.check-item.done .check-box {
+  background: var(--green);
+  border-color: var(--green);
+  color: white;
+}
+.check-progress {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  margin: 10px 0 16px;
+}
 
-  /* DIVIDER */
-  .divider {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin: 28px 0;
-    color: var(--muted);
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-  .divider::before, .divider::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
+/* DIVIDER */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 24px 0;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.divider::before, .divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
 
-  @media (max-width: 480px) {
-    .row-2 { grid-template-columns: 1fr; }
-    .breakdown-grid { grid-template-columns: 1fr 1fr; }
-    .info-big { font-size: 2.5rem; }
-  }
+@media (max-width: 420px) {
+  .ic-big { font-size: 2.2rem; }
+  .result-num { font-size: 2.8rem; }
+}
 </style>
 </head>
 <body>
 
 <!-- HERO -->
 <div class="hero">
-  <div class="hero-eyebrow">🌱 Campus Green Initiative</div>
-  <h1>Know Your <span>Carbon Footprint</span></h1>
-  <p>Calculate how much CO₂ your daily habits produce — then discover how small changes make a big difference.</p>
-  <div class="step-pills">
-    <div class="pill"><span class="num">1</span> Your Details</div>
-    <div class="pill"><span class="num">2</span> Calculate</div>
-    <div class="pill"><span class="num">3</span> Learn</div>
-    <div class="pill"><span class="num">4</span> Post-Survey</div>
-  </div>
+  <div class="hero-tag">🌱 Campus Green Initiative 2025</div>
+  <h1>Your <span>Carbon Footprint</span> Calculator</h1>
+  <p>Find out how your daily habits affect the environment — takes just 5 minutes!</p>
 </div>
 
 <!-- PROGRESS -->
-<div class="progress-wrap">
-  <div class="progress-label" id="progressLabel">Step 1 of 4 — Student Details</div>
-  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+<div class="prog-bar-wrap">
+  <div class="prog-label" id="progLabel">Step 1 of 4 — Your Details</div>
+  <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
 </div>
 
-<!-- ===== SECTION 1: STUDENT DETAILS ===== -->
-<div class="section active" id="sec1">
-<div class="container">
-  <div class="section-label">Before We Begin</div>
-  <div class="section-title">Tell us who you are</div>
-  <div class="section-desc">Your responses will be saved securely. This helps us match your pre and post survey data.</div>
+<!-- ===================== SECTION 1: DETAILS ===================== -->
+<div class="section active" id="s1">
+<div class="wrap">
+  <div class="sec-tag">Let's Begin</div>
+  <div class="sec-title">Who are you? 👋</div>
+  <div class="sec-desc">Enter your details so your result can be saved and tracked by your facilitator.</div>
 
   <div class="card">
-    <div class="card-header">
+    <div class="card-head">
       <div class="card-icon">🎓</div>
       <div>
-        <div class="card-title">Student Information</div>
-        <div class="card-sub">Required to track your results</div>
+        <div class="card-title">Student Details</div>
+        <div class="card-sub">Both fields are required</div>
       </div>
     </div>
     <div class="field">
-      <label>Full Name *</label>
-      <input type="text" id="studentName" placeholder="e.g. Priya Sharma" />
+      <label>Full Name</label>
+      <input type="text" id="sName" placeholder="Type your full name" />
     </div>
     <div class="field">
-      <label>Roll Number *</label>
-      <input type="text" id="rollNo" placeholder="e.g. 22CS1234" />
+      <label>Roll Number</label>
+      <input type="text" id="sRoll" placeholder="Type your roll number" />
     </div>
   </div>
 
-  <button class="btn-primary" onclick="goToCalc()">Continue to Calculator →</button>
+  <button class="btn" onclick="goS2()">Next — Start Calculator →</button>
 </div>
 </div>
 
-<!-- ===== SECTION 2: CALCULATOR ===== -->
-<div class="section" id="sec2">
-<div class="container">
-  <div class="section-label">Carbon Calculator</div>
-  <div class="section-title">How do you live?</div>
-  <div class="section-desc">Answer honestly — there are no right or wrong answers. Every response helps us understand your footprint.</div>
+<!-- ===================== SECTION 2: CALCULATOR ===================== -->
+<div class="section" id="s2">
+<div class="wrap">
+  <div class="sec-tag">Carbon Calculator</div>
+  <div class="sec-title">Your Daily Habits 🌍</div>
+  <div class="sec-desc">Answer honestly — every option is okay! No judgment here. 😊</div>
 
   <!-- TRANSPORT -->
   <div class="card">
-    <div class="card-header">
+    <div class="card-head">
       <div class="card-icon">🚗</div>
       <div>
-        <div class="card-title">Transport</div>
-        <div class="card-sub">How you get around daily</div>
+        <div class="card-title">Getting Around</div>
+        <div class="card-sub">How you travel to college</div>
       </div>
     </div>
     <div class="field">
-      <label>Primary mode of travel to college</label>
+      <label>How do you usually travel to college?</label>
       <select id="transport">
-        <option value="">Select...</option>
-        <option value="walk">Walking / Cycling</option>
-        <option value="bus">Public Bus / Metro</option>
-        <option value="bike">Two-wheeler (Petrol)</option>
-        <option value="car_pool">Car (Carpooled)</option>
-        <option value="car_alone">Car (Alone)</option>
-        <option value="auto">Auto-rickshaw</option>
+        <option value="">— Select one —</option>
+        <option value="walk">🚶 Walk or cycle</option>
+        <option value="bus">🚌 Public bus or metro</option>
+        <option value="bike">🛵 Two-wheeler (petrol)</option>
+        <option value="carpool">🚗 Car (shared with others)</option>
+        <option value="car">🚗 Car (alone)</option>
+        <option value="auto">🛺 Auto-rickshaw</option>
       </select>
     </div>
-    <div class="row-2">
-      <div class="field">
-        <label>Distance one way (km)</label>
-        <input type="number" id="distance" placeholder="e.g. 5" min="0" max="100" />
-      </div>
-      <div class="field">
-        <label>Days you travel per week</label>
-        <input type="number" id="travelDays" placeholder="e.g. 5" min="0" max="7" />
-      </div>
+    <div class="field">
+      <label>Distance from home to college (km)</label>
+      <input type="number" id="dist" placeholder="e.g. 5" min="0" max="100" />
     </div>
     <div class="field">
-      <label>Long-distance trips per year (train/bus/flight)</label>
-      <select id="longTravel">
+      <label>Long trips per year (train, bus or flight)?</label>
+      <select id="longtrip">
+        <option value="">— Select one —</option>
         <option value="0">None</option>
-        <option value="1">1–2 trips (train/bus)</option>
-        <option value="2">3–5 trips (train/bus)</option>
+        <option value="1">1–2 train or bus trips</option>
+        <option value="2">3–5 train or bus trips</option>
         <option value="3">1–2 flights</option>
-        <option value="4">3+ flights</option>
+        <option value="4">3 or more flights</option>
       </select>
     </div>
   </div>
 
   <!-- FOOD -->
   <div class="card">
-    <div class="card-header">
+    <div class="card-head">
       <div class="card-icon">🍽️</div>
       <div>
-        <div class="card-title">Food & Diet</div>
-        <div class="card-sub">What you eat matters</div>
+        <div class="card-title">Food & Eating</div>
+        <div class="card-sub">What you eat every day</div>
       </div>
     </div>
     <div class="field">
-      <label>Your diet type</label>
+      <label>What best describes your diet?</label>
       <select id="diet">
-        <option value="">Select...</option>
-        <option value="vegan">Vegan (no animal products)</option>
-        <option value="vegetarian">Vegetarian (dairy/eggs ok)</option>
-        <option value="mixed_low">Mixed — mostly vegetarian</option>
-        <option value="mixed">Mixed — regular non-veg</option>
-        <option value="heavy_meat">Heavy meat eater (daily)</option>
+        <option value="">— Select one —</option>
+        <option value="vegan">🥦 Fully plant-based (no dairy or eggs)</option>
+        <option value="veg">🥗 Vegetarian (dairy and eggs are ok)</option>
+        <option value="mixlow">🍛 Mostly vegetarian, sometimes non-veg</option>
+        <option value="mix">🍗 Non-veg most days</option>
+        <option value="meat">🥩 Meat or chicken at every meal</option>
       </select>
     </div>
     <div class="field">
-      <label>How often do you eat out or order food delivery?</label>
-      <select id="eatOut">
-        <option value="0">Rarely (home food mostly)</option>
-        <option value="1">1–2 times a week</option>
-        <option value="2">3–5 times a week</option>
+      <label>How often do you order food or eat out?</label>
+      <select id="eatout">
+        <option value="">— Select one —</option>
+        <option value="0">Rarely — mostly home food</option>
+        <option value="1">Once or twice a week</option>
+        <option value="2">3 to 5 times a week</option>
         <option value="3">Almost every day</option>
       </select>
     </div>
     <div class="field">
-      <label>How much food do you waste on average?</label>
-      <select id="foodWaste">
-        <option value="0">Very little — I finish what I take</option>
-        <option value="1">Some — occasionally leave food</option>
-        <option value="2">Moderate — often have leftovers wasted</option>
-        <option value="3">A lot — large portions go to waste</option>
+      <label>How much food do you usually waste?</label>
+      <select id="waste_food">
+        <option value="">— Select one —</option>
+        <option value="0">I usually finish everything</option>
+        <option value="1">I leave a little sometimes</option>
+        <option value="2">I often have leftovers that get thrown</option>
+        <option value="3">I waste quite a lot of food</option>
       </select>
     </div>
   </div>
 
   <!-- ENERGY -->
   <div class="card">
-    <div class="card-header">
+    <div class="card-head">
       <div class="card-icon">⚡</div>
       <div>
-        <div class="card-title">Home Energy Use</div>
-        <div class="card-sub">Electricity & appliances</div>
+        <div class="card-title">Home Energy</div>
+        <div class="card-sub">Electricity use at home</div>
       </div>
     </div>
     <div class="field">
-      <label>Approximate monthly electricity bill at home</label>
-      <select id="electricity">
-        <option value="">Select...</option>
-        <option value="low">Below ₹500 (very minimal use)</option>
-        <option value="medium">₹500–₹1500 (average)</option>
-        <option value="high">₹1500–₹3000 (AC + heavy appliances)</option>
-        <option value="very_high">Above ₹3000 (high usage)</option>
+      <label>Monthly electricity bill at home (approx.)</label>
+      <select id="elec">
+        <option value="">— Select one —</option>
+        <option value="low">Below ₹500</option>
+        <option value="med">₹500 – ₹1500</option>
+        <option value="high">₹1500 – ₹3000</option>
+        <option value="vhigh">Above ₹3000</option>
       </select>
     </div>
     <div class="field">
-      <label>Do you use air conditioning at home?</label>
+      <label>Do you use AC at home?</label>
       <select id="ac">
-        <option value="0">No AC</option>
-        <option value="1">Sometimes (2–3 months/year)</option>
-        <option value="2">Regularly (6+ months/year)</option>
-        <option value="3">All year round</option>
+        <option value="">— Select one —</option>
+        <option value="0">No AC at home</option>
+        <option value="1">Only in summer (2–3 months)</option>
+        <option value="2">About half the year</option>
+        <option value="3">Almost all year</option>
       </select>
     </div>
     <div class="field">
-      <label>Screen time per day (phone + laptop + TV)</label>
-      <select id="screenTime">
-        <option value="1">Less than 3 hours</option>
-        <option value="2">3–6 hours</option>
-        <option value="3">6–9 hours</option>
-        <option value="4">More than 9 hours</option>
+      <label>How often do you switch off lights and fans when leaving a room?</label>
+      <select id="lights">
+        <option value="">— Select one —</option>
+        <option value="0">Always — I never forget</option>
+        <option value="1">Usually yes</option>
+        <option value="2">Sometimes I forget</option>
+        <option value="3">I rarely switch them off</option>
       </select>
     </div>
   </div>
 
-  <!-- WASTE & WATER -->
+  <!-- DIGITAL -->
   <div class="card">
-    <div class="card-header">
-      <div class="card-icon">♻️</div>
+    <div class="card-head">
+      <div class="card-icon">📱</div>
       <div>
-        <div class="card-title">Waste & Water</div>
-        <div class="card-sub">Your consumption habits</div>
+        <div class="card-title">Digital Life</div>
+        <div class="card-sub">Your screen and online habits</div>
       </div>
     </div>
     <div class="field">
-      <label>How do you handle your household waste?</label>
+      <label>Total screen time per day (phone + laptop + TV)?</label>
+      <select id="screen">
+        <option value="">— Select one —</option>
+        <option value="1">Under 3 hours</option>
+        <option value="2">3 to 6 hours</option>
+        <option value="3">6 to 9 hours</option>
+        <option value="4">More than 9 hours</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>How often do you stream videos (YouTube, Netflix, Reels, etc.)?</label>
+      <select id="stream">
+        <option value="">— Select one —</option>
+        <option value="0">Rarely</option>
+        <option value="1">About 1–2 hours a day</option>
+        <option value="2">3–5 hours a day</option>
+        <option value="3">More than 5 hours a day</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>How often do you shop online (clothes, gadgets, food delivery)?</label>
+      <select id="online">
+        <option value="">— Select one —</option>
+        <option value="0">Rarely — a few times a year</option>
+        <option value="1">Once or twice a month</option>
+        <option value="2">Every week</option>
+        <option value="3">Almost every day</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- WASTE -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-icon">♻️</div>
+      <div>
+        <div class="card-title">Waste & Water</div>
+        <div class="card-sub">Everyday consumption habits</div>
+      </div>
+    </div>
+    <div class="field">
+      <label>How do you handle waste at home?</label>
       <select id="waste">
-        <option value="0">I segregate and compost</option>
-        <option value="1">I segregate dry/wet waste</option>
-        <option value="2">I throw everything in one bin</option>
-        <option value="3">I burn or dump it openly</option>
+        <option value="">— Select one —</option>
+        <option value="0">I separate dry and wet waste</option>
+        <option value="1">I try to but not always</option>
+        <option value="2">Everything goes in one bin</option>
+        <option value="3">Waste is burned or dumped outside</option>
       </select>
     </div>
     <div class="field">
-      <label>Plastic usage in daily life</label>
+      <label>How often do you use plastic bags or single-use plastic?</label>
       <select id="plastic">
-        <option value="0">I carry reusable bags & bottles always</option>
-        <option value="1">Sometimes use plastic, try to reduce</option>
-        <option value="2">Regular plastic use (bags, bottles, straws)</option>
-        <option value="3">Heavy single-use plastic use</option>
+        <option value="">— Select one —</option>
+        <option value="0">Never — I carry my own bag and bottle</option>
+        <option value="1">Sometimes, but I try to avoid it</option>
+        <option value="2">Fairly often</option>
+        <option value="3">Almost every day</option>
       </select>
     </div>
     <div class="field">
-      <label>Daily bathing/shower time (minutes)</label>
+      <label>How long is your daily bath or shower?</label>
       <select id="water">
-        <option value="0">Less than 5 min (bucket bath)</option>
-        <option value="1">5–10 minutes</option>
-        <option value="2">10–15 minutes</option>
+        <option value="">— Select one —</option>
+        <option value="0">Under 5 minutes (bucket bath)</option>
+        <option value="1">5 to 10 minutes</option>
+        <option value="2">10 to 15 minutes</option>
         <option value="3">More than 15 minutes</option>
       </select>
     </div>
   </div>
 
-  <!-- SHOPPING -->
-  <div class="card">
-    <div class="card-header">
-      <div class="card-icon">🛍️</div>
-      <div>
-        <div class="card-title">Shopping & Lifestyle</div>
-        <div class="card-sub">What you buy and how often</div>
-      </div>
-    </div>
-    <div class="field">
-      <label>How often do you buy new clothes?</label>
-      <select id="clothes">
-        <option value="0">Rarely — wear what I have</option>
-        <option value="1">Once every few months</option>
-        <option value="2">Monthly</option>
-        <option value="3">Weekly (fast fashion)</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>Online shopping frequency</label>
-      <select id="shopping">
-        <option value="0">Rarely (a few times a year)</option>
-        <option value="1">Monthly</option>
-        <option value="2">Weekly</option>
-        <option value="3">Daily / Multiple per week</option>
-      </select>
-    </div>
-  </div>
-
-  <button class="btn-primary" onclick="calculateFootprint()">🌿 Calculate My Carbon Footprint →</button>
+  <button class="btn" onclick="calculate()">🌿 Calculate My Footprint →</button>
 </div>
 </div>
 
-<!-- ===== SECTION 3: RESULTS + INFOGRAPHICS ===== -->
-<div class="section" id="sec3">
-<div class="container">
+<!-- ===================== SECTION 3: RESULTS + INFOGRAPHICS ===================== -->
+<div class="section" id="s3">
+<div class="wrap">
 
-  <div class="section-label">Your Result</div>
-  <div class="section-title">Your Personal Footprint</div>
-  <div class="section-desc">Here's a breakdown of your annual carbon emissions based on your answers.</div>
+  <div class="sec-tag">Your Result</div>
+  <div class="sec-title">Here's your footprint 🌍</div>
+  <div class="sec-desc">This is how much CO₂ your daily habits produce in a year.</div>
 
-  <!-- RESULT HERO -->
-  <div class="result-hero" id="resultHero">
+  <!-- RESULT -->
+  <div class="result-box">
     <div class="result-label">Your Annual CO₂ Emissions</div>
-    <div class="result-number" id="resultNumber">—</div>
-    <div class="result-unit">kg CO₂ per year</div>
-    <div id="resultBadge" class="result-badge">Calculating...</div>
+    <div class="result-num" id="rNum">—</div>
+    <div class="result-unit">kg of CO₂ per year</div>
+    <div class="result-badge" id="rBadge">—</div>
   </div>
 
   <!-- BREAKDOWN -->
-  <div class="breakdown-grid" id="breakdownGrid">
-    <div class="breakdown-item"><div class="breakdown-icon">🚗</div><div class="breakdown-val" id="bTransport">—</div><div class="breakdown-cat">Transport</div></div>
-    <div class="breakdown-item"><div class="breakdown-icon">🍽️</div><div class="breakdown-val" id="bFood">—</div><div class="breakdown-cat">Food</div></div>
-    <div class="breakdown-item"><div class="breakdown-icon">⚡</div><div class="breakdown-val" id="bEnergy">—</div><div class="breakdown-cat">Energy</div></div>
-    <div class="breakdown-item"><div class="breakdown-icon">♻️</div><div class="breakdown-val" id="bWaste">—</div><div class="breakdown-cat">Waste & Lifestyle</div></div>
+  <div class="grid4">
+    <div class="mini-card"><div class="mini-icon">🚗</div><div class="mini-val" id="bT">—</div><div class="mini-cat">Transport</div></div>
+    <div class="mini-card"><div class="mini-icon">🍽️</div><div class="mini-val" id="bF">—</div><div class="mini-cat">Food</div></div>
+    <div class="mini-card"><div class="mini-icon">⚡</div><div class="mini-val" id="bE">—</div><div class="mini-cat">Energy</div></div>
+    <div class="mini-card"><div class="mini-icon">📱</div><div class="mini-val" id="bD">—</div><div class="mini-cat">Digital</div></div>
+    <div class="mini-card"><div class="mini-icon">♻️</div><div class="mini-val" id="bW">—</div><div class="mini-cat">Waste</div></div>
+    <div class="mini-card"><div class="mini-icon">📊</div><div class="mini-val" id="bTotal">—</div><div class="mini-cat">Total kg/yr</div></div>
   </div>
 
-  <div id="submitStatus" class="status-box"></div>
+  <div id="saveStatus" class="status"></div>
 
-  <div class="divider">What your footprint means</div>
-
-  <!-- INFOGRAPHIC 1 -->
-  <div class="info-card green">
-    <div class="info-emoji">🇮🇳</div>
-    <div class="info-tag">India Context</div>
-    <div class="info-big">1.9</div>
-    <div class="info-unit">tonnes CO₂ per person per year (India average)</div>
-    <div class="info-text">India's per-capita carbon footprint is among the lowest globally — but it's rising fast. Urban college students typically produce 1.5–3× the national average due to higher energy, transport, and food consumption.</div>
+  <!-- NOTICE -->
+  <div class="notice">
+    ⚠️ <strong>Important — Please Read All Cards Below!</strong>
+    The 6 cards below are your learning material for this session. The <strong>Post Survey questions are directly based on these cards.</strong> Read each one carefully before moving ahead. Skipping them means you may not be able to answer the Post Survey correctly!
   </div>
 
-  <!-- INFOGRAPHIC 2 -->
-  <div class="info-card amber">
-    <div class="info-emoji">🌳</div>
-    <div class="info-tag">Tree Equivalence</div>
-    <div class="info-big" id="treesNeeded">—</div>
-    <div class="info-unit">trees needed to absorb your annual emissions</div>
-    <div class="info-text">One mature tree absorbs about 21 kg of CO₂ per year. Your footprint requires this many trees working all year just to balance what you emit — and India is still losing forest cover.</div>
+  <div class="divider">Read all 6 cards carefully</div>
+
+  <!-- INFOGRAPHIC CARDS -->
+
+  <div class="info-card ic-green">
+    <div class="ic-emoji">🌱</div>
+    <div class="ic-tag">Card 1 — What is Carbon Footprint?</div>
+    <div class="ic-big">CO₂</div>
+    <div class="ic-unit">Carbon Dioxide — the main cause of global warming</div>
+    <div class="ic-text">A <strong>carbon footprint</strong> is the total amount of greenhouse gases — especially CO₂ — produced by everything you do. Travel, food, electricity, shopping — all of it adds up. The bigger your footprint, the more heat gets trapped in our atmosphere.</div>
   </div>
 
-  <!-- INFOGRAPHIC 3 -->
-  <div class="info-card blue">
-    <div class="info-emoji">🌍</div>
-    <div class="info-tag">Global Budget</div>
-    <div class="info-big">2.5T</div>
-    <div class="info-unit">tonnes — the safe global limit per person per year</div>
-    <div class="info-text">To limit global warming to 1.5°C, each person on Earth must emit no more than 2.5 tonnes of CO₂ per year by 2030. Most developed countries emit 8–15 tonnes per person. The choices you make today shape that number.</div>
+  <div class="info-card ic-amber">
+    <div class="ic-emoji">🚗</div>
+    <div class="ic-tag">Card 2 — Biggest Source of CO₂</div>
+    <div class="ic-big">~50%</div>
+    <div class="ic-unit">of your footprint can come from transport alone</div>
+    <div class="ic-text">Petrol vehicles are one of the biggest sources of personal CO₂. A petrol two-wheeler emits about <strong>110g of CO₂ per km</strong>. If you travel 10 km daily, that's over 400 kg of CO₂ every year — just getting to college. Walking, cycling, or taking the bus makes a huge difference.</div>
   </div>
 
-  <!-- INFOGRAPHIC 4 -->
-  <div class="info-card red">
-    <div class="info-emoji">🌡️</div>
-    <div class="info-tag">Why It Matters</div>
-    <div class="info-big">+1.5°C</div>
-    <div class="info-unit">the tipping point scientists warn us about</div>
-    <div class="info-text">Beyond 1.5°C of warming, we face more extreme floods, droughts, and heatwaves — especially in South Asia. Hyderabad and coastal Andhra are among the most climate-vulnerable regions in India. This isn't a future problem.</div>
+  <div class="info-card ic-teal">
+    <div class="ic-emoji">🥗</div>
+    <div class="ic-tag">Card 3 — Food and Your Footprint</div>
+    <div class="ic-big">5–30×</div>
+    <div class="ic-unit">more CO₂ from meat compared to vegetables</div>
+    <div class="ic-text">The food on your plate has a carbon cost too. Producing 1 kg of beef creates up to <strong>30 kg of CO₂</strong>, while 1 kg of vegetables creates less than 2 kg. A vegetarian diet is one of the single most effective ways to lower your personal carbon footprint.</div>
   </div>
 
-  <!-- TIPS CARD -->
-  <div class="card">
-    <div class="card-header">
-      <div class="card-icon">💡</div>
-      <div>
-        <div class="card-title">5 Easy Actions For Students</div>
-        <div class="card-sub">Small changes, real impact</div>
-      </div>
-    </div>
-    <ul class="tip-list">
-      <li><span class="tip-dot"></span><div><strong>Switch to public transport or cycling</strong> — transport is often the #1 source of student emissions.</div></li>
-      <li><span class="tip-dot"></span><div><strong>Eat one less meat meal per week</strong> — beef and chicken production emits 5–30× more CO₂ than vegetables.</div></li>
-      <li><span class="tip-dot"></span><div><strong>Unplug chargers & switch off lights</strong> — idle electronics account for 10% of home electricity.</div></li>
-      <li><span class="tip-dot"></span><div><strong>Carry a reusable bag and bottle</strong> — prevents hundreds of plastic items from landfills each year.</div></li>
-      <li><span class="tip-dot"></span><div><strong>Reduce, then reuse, then recycle</strong> — buying less is always more impactful than recycling more.</div></li>
-    </ul>
+  <div class="info-card ic-blue">
+    <div class="ic-emoji">🌡️</div>
+    <div class="ic-tag">Card 4 — The Greenhouse Effect</div>
+    <div class="ic-big">+1.5°C</div>
+    <div class="ic-unit">the dangerous warming limit scientists warn about</div>
+    <div class="ic-text">The <strong>greenhouse effect</strong> happens when gases like CO₂ trap heat in Earth's atmosphere — like a blanket around the Earth. The more CO₂ we emit, the thicker the blanket gets. Beyond 1.5°C of warming, we face extreme floods, droughts, and heatwaves — especially in South Asia.</div>
   </div>
 
-  <!-- INFOGRAPHIC 5 -->
-  <div class="info-card teal">
-    <div class="info-emoji">🎓</div>
-    <div class="info-tag">You Have Power</div>
-    <div class="info-big">200</div>
-    <div class="info-unit">students in this program</div>
-    <div class="info-text">If every student in this program reduces their footprint by just 10%, we collectively prevent over <strong id="collectiveSave">—</strong> kg of CO₂ from entering the atmosphere. Campus action adds up.</div>
+  <div class="info-card ic-purple">
+    <div class="ic-emoji">☀️</div>
+    <div class="ic-tag">Card 5 — Renewable Energy</div>
+    <div class="ic-big">0g</div>
+    <div class="ic-unit">CO₂ emitted by solar, wind, or water energy</div>
+    <div class="ic-text"><strong>Renewable energy</strong> comes from sources that never run out — sun, wind, and water. Unlike coal or petrol, they produce zero CO₂ when generating electricity. India is now the 4th largest solar energy producer in the world. Switching to renewables is key to fighting climate change.</div>
   </div>
 
-  <div class="divider">Ready to take action?</div>
+  <div class="info-card ic-red">
+    <div class="ic-emoji">♻️</div>
+    <div class="ic-tag">Card 6 — Reduce, Reuse, Recycle</div>
+    <div class="ic-big">3R</div>
+    <div class="ic-unit">the golden rule of sustainable living</div>
+    <div class="ic-text">The <strong>3Rs</strong> — Reduce, Reuse, Recycle — help cut down waste and CO₂. <strong>Reduce</strong>: buy only what you need. <strong>Reuse</strong>: use things again instead of throwing them. <strong>Recycle</strong>: turn waste into something new. In that order — reducing is always more powerful than recycling.</div>
+  </div>
 
-  <button class="btn-primary" onclick="goToPostSurvey()">Proceed to Post-Survey + Green Pledge →</button>
+  <div class="divider">Confirm you read all 6 cards</div>
+
+  <!-- CHECKLIST -->
+  <div class="check-progress" id="checkCount">0 of 6 cards marked as read</div>
+
+  <div class="check-item" id="c1" onclick="tick(1)">
+    <div class="check-box" id="cb1"></div>
+    <span>✅ Card 1 — I understand what a carbon footprint is</span>
+  </div>
+  <div class="check-item" id="c2" onclick="tick(2)">
+    <div class="check-box" id="cb2"></div>
+    <span>✅ Card 2 — I know transport is a big source of CO₂</span>
+  </div>
+  <div class="check-item" id="c3" onclick="tick(3)">
+    <div class="check-box" id="cb3"></div>
+    <span>✅ Card 3 — I know vegetarian food has lower CO₂</span>
+  </div>
+  <div class="check-item" id="c4" onclick="tick(4)">
+    <div class="check-box" id="cb4"></div>
+    <span>✅ Card 4 — I understand the greenhouse effect</span>
+  </div>
+  <div class="check-item" id="c5" onclick="tick(5)">
+    <div class="check-box" id="cb5"></div>
+    <span>✅ Card 5 — I know what renewable energy means</span>
+  </div>
+  <div class="check-item" id="c6" onclick="tick(6)">
+    <div class="check-box" id="cb6"></div>
+    <span>✅ Card 6 — I understand Reduce, Reuse, Recycle</span>
+  </div>
+
+  <br/>
+  <button class="btn" id="nextBtn" onclick="goS4()" disabled>
+    🔒 Mark all 6 cards to continue
+  </button>
 
 </div>
 </div>
 
-<!-- ===== SECTION 4: THANK YOU ===== -->
-<div class="section" id="sec4">
-<div class="container" style="text-align:center; padding-top: 60px;">
-  <div style="font-size: 64px; margin-bottom: 20px;">🌱</div>
-  <div class="section-label" style="justify-content: center; display: flex;">All Done</div>
-  <div class="section-title" style="text-align:center;">Your data has been recorded!</div>
-  <div class="section-desc" style="text-align:center; max-width: 400px; margin: 0 auto 32px;">
-    Thank you for completing the Carbon Footprint Calculator. Your responses have been saved. Please now complete the <strong>Post-Survey Google Form</strong> shared by your facilitator.
+<!-- ===================== SECTION 4: DONE ===================== -->
+<div class="section" id="s4">
+<div class="wrap" style="text-align:center; padding-top:50px;">
+  <div style="font-size:60px; margin-bottom:16px;">🌱</div>
+  <div class="sec-tag" style="text-align:center;">All Done!</div>
+  <div class="sec-title" style="text-align:center;">Great job! Your data is saved.</div>
+  <div class="sec-desc" style="text-align:center; max-width:380px; margin:0 auto 28px;">
+    Your carbon footprint has been recorded. Now go back to the Google Form and complete <strong>Part 2 — Post Survey</strong>!
   </div>
+
   <div class="card" style="text-align:left;">
-    <div class="card-header">
+    <div class="card-head">
       <div class="card-icon">✅</div>
       <div>
-        <div class="card-title">What was saved</div>
-        <div class="card-sub">Sent to your admin's Google Sheet</div>
+        <div class="card-title">What was saved to admin sheet</div>
+        <div class="card-sub">Sent to Google Sheets automatically</div>
       </div>
     </div>
-    <ul class="tip-list">
-      <li><span class="tip-dot"></span><div>Your name and roll number</div></li>
-      <li><span class="tip-dot"></span><div>Your total annual CO₂ footprint (kg)</div></li>
-      <li><span class="tip-dot"></span><div>Breakdown: Transport, Food, Energy, Waste</div></li>
-      <li><span class="tip-dot"></span><div>Date and time of submission</div></li>
-    </ul>
+    <div style="font-size:13px; line-height:2; color:var(--text);">
+      📌 Your name and roll number<br/>
+      📌 Total CO₂ (kg/year)<br/>
+      📌 Breakdown: Transport, Food, Energy, Digital, Waste<br/>
+      📌 Date and time of submission
+    </div>
   </div>
-  <div style="background: var(--sky); border-radius: 12px; padding: 20px; margin-top: 16px; font-size: 0.9rem; color: var(--green-deep);">
-    🔗 Your facilitator will share the <strong>Post-Survey link</strong> with you. Please complete it to finish the session.
+
+  <div style="background:#fff8e1; border:2px solid #f4a261; border-radius:12px; padding:16px; font-size:13px; color:#5a3e00; line-height:1.7; margin-top:4px;">
+    👉 Go back to the <strong>Google Form</strong> now and answer <strong>Part 2 (Post Survey)</strong> using what you learned from the 6 cards!
   </div>
 </div>
 </div>
 
 <script>
-// ========== GOOGLE APPS SCRIPT URL ==========
-// ADMIN: Paste your Web App URL here after deploying the Apps Script
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxYJ-Y2SjptGrYE9YGIf5xHgRYnLbKSaowIJD5RwOEu3WW3zSVG2AsRoUrb0J_sUG2E4g/exec";
+// ── PASTE YOUR APPS SCRIPT URL HERE ──
+const SCRIPT_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE";
 
-// ========== NAVIGATION ==========
-let studentName = "", rollNo = "", totalCO2 = 0;
+let name_ = "", roll_ = "", total_ = 0;
+let checked = [false,false,false,false,false,false];
 
-function updateProgress(step) {
+function setProgress(step) {
   const labels = [
-    "Step 1 of 4 — Student Details",
-    "Step 2 of 4 — Carbon Calculator",
-    "Step 3 of 4 — Results & Awareness",
+    "Step 1 of 4 — Your Details",
+    "Step 2 of 4 — Calculator",
+    "Step 3 of 4 — Results & Learning",
     "Step 4 of 4 — Complete"
   ];
-  document.getElementById("progressLabel").textContent = labels[step - 1];
-  document.getElementById("progressFill").style.width = (step / 4 * 100) + "%";
+  document.getElementById("progLabel").textContent = labels[step-1];
+  document.getElementById("progFill").style.width = (step/4*100)+"%";
 }
 
-function goToCalc() {
-  studentName = document.getElementById("studentName").value.trim();
-  rollNo = document.getElementById("rollNo").value.trim();
-  if (!studentName || !rollNo) {
-    alert("Please enter your Name and Roll Number to continue.");
-    return;
-  }
-  showSection("sec2");
-  updateProgress(2);
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}
-
-function showSection(id) {
+function show(id) {
   document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
   document.getElementById(id).classList.add("active");
+  window.scrollTo({top:0, behavior:"smooth"});
 }
 
-function goToPostSurvey() {
-  showSection("sec4");
-  updateProgress(4);
-  window.scrollTo({ top: 0, behavior: "smooth" });
+function goS2() {
+  name_ = document.getElementById("sName").value.trim();
+  roll_ = document.getElementById("sRoll").value.trim();
+  if (!name_ || !roll_) { alert("Please enter your Name and Roll Number."); return; }
+  show("s2"); setProgress(2);
 }
 
-// ========== CARBON CALCULATION ==========
-function calculateFootprint() {
-  // --- TRANSPORT ---
-  const transportMode = document.getElementById("transport").value;
-  const distance = parseFloat(document.getElementById("distance").value) || 0;
-  const travelDays = parseFloat(document.getElementById("travelDays").value) || 5;
-  const longTravel = parseInt(document.getElementById("longTravel").value) || 0;
-
-  const emissionFactor = { walk: 0, bus: 0.07, bike: 0.11, car_pool: 0.06, car_alone: 0.21, auto: 0.1 };
-  const ef = emissionFactor[transportMode] || 0.1;
-  const annualKm = distance * 2 * travelDays * 52;
-  const longTravelCO2 = [0, 80, 200, 400, 900][longTravel];
-  const transportCO2 = Math.round(annualKm * ef + longTravelCO2);
-
-  // --- FOOD ---
-  const dietBase = { vegan: 400, vegetarian: 700, mixed_low: 1000, mixed: 1400, heavy_meat: 2200 };
-  const dietVal = document.getElementById("diet").value;
-  const foodBase = dietBase[dietVal] || 1000;
-  const eatOutAdd = [0, 60, 150, 300][parseInt(document.getElementById("eatOut").value)];
-  const wasteAdd = [0, 50, 120, 250][parseInt(document.getElementById("foodWaste").value)];
-  const foodCO2 = Math.round(foodBase + eatOutAdd + wasteAdd);
-
-  // --- ENERGY ---
-  const electricityBase = { low: 200, medium: 500, high: 950, very_high: 1600 };
-  const elecVal = document.getElementById("electricity").value;
-  const elecBase = electricityBase[elecVal] || 500;
-  const acAdd = [0, 100, 300, 600][parseInt(document.getElementById("ac").value)];
-  const screenAdd = [0, 40, 80, 130, 200][parseInt(document.getElementById("screenTime").value)];
-  const energyCO2 = Math.round(elecBase + acAdd + screenAdd);
-
-  // --- WASTE & LIFESTYLE ---
-  const wasteBase = [0, 50, 120, 280][parseInt(document.getElementById("waste").value)];
-  const plasticAdd = [0, 30, 80, 180][parseInt(document.getElementById("plastic").value)];
-  const waterAdd = [0, 30, 70, 130][parseInt(document.getElementById("water").value)];
-  const clothesAdd = [0, 60, 150, 400][parseInt(document.getElementById("clothes").value)];
-  const shoppingAdd = [0, 50, 120, 250][parseInt(document.getElementById("shopping").value)];
-  const wasteCO2 = Math.round(wasteBase + plasticAdd + waterAdd + clothesAdd + shoppingAdd);
-
-  totalCO2 = transportCO2 + foodCO2 + energyCO2 + wasteCO2;
-
-  // --- UPDATE UI ---
-  document.getElementById("resultNumber").textContent = totalCO2.toLocaleString("en-IN");
-  document.getElementById("bTransport").textContent = transportCO2 + " kg";
-  document.getElementById("bFood").textContent = foodCO2 + " kg";
-  document.getElementById("bEnergy").textContent = energyCO2 + " kg";
-  document.getElementById("bWaste").textContent = wasteCO2 + " kg";
-
-  const badge = document.getElementById("resultBadge");
-  if (totalCO2 < 1000) { badge.textContent = "🟢 Below Average — Great!"; badge.className = "result-badge badge-low"; }
-  else if (totalCO2 < 2200) { badge.textContent = "🟡 Average — Room to Improve"; badge.className = "result-badge badge-medium"; }
-  else { badge.textContent = "🔴 Above Average — Let's Reduce!"; badge.className = "result-badge badge-high"; }
-
-  const trees = Math.ceil(totalCO2 / 21);
-  document.getElementById("treesNeeded").textContent = trees;
-  document.getElementById("collectiveSave").textContent = Math.round(totalCO2 * 200 * 0.1).toLocaleString("en-IN");
-
-  showSection("sec3");
-  updateProgress(3);
-  window.scrollTo({ top: 0, behavior: "smooth" });
-
-  // Submit to Google Sheet
-  submitToSheet(transportCO2, foodCO2, energyCO2, wasteCO2);
+function goS4() {
+  show("s4"); setProgress(4);
 }
 
-// ========== SUBMIT TO GOOGLE SHEET ==========
-function submitToSheet(transport, food, energy, waste) {
-  const statusEl = document.getElementById("submitStatus");
-  statusEl.className = "status-box loading";
-  statusEl.textContent = "⏳ Saving your data to the admin sheet...";
+// CHECKLIST
+function tick(n) {
+  checked[n-1] = !checked[n-1];
+  const item = document.getElementById("c"+n);
+  const box  = document.getElementById("cb"+n);
+  if (checked[n-1]) {
+    item.classList.add("done");
+    box.textContent = "✓";
+  } else {
+    item.classList.remove("done");
+    box.textContent = "";
+  }
+  const done = checked.filter(Boolean).length;
+  document.getElementById("checkCount").textContent = done + " of 6 cards marked as read";
+  const btn = document.getElementById("nextBtn");
+  if (done === 6) {
+    btn.disabled = false;
+    btn.textContent = "Go to Post Survey →";
+  } else {
+    btn.disabled = true;
+    btn.textContent = "🔒 Mark all 6 cards to continue (" + done + "/6)";
+  }
+}
 
-  const payload = {
-    name: studentName,
-    rollNo: rollNo,
-    totalCO2: totalCO2,
-    transport: transport,
-    food: food,
-    energy: energy,
-    waste: waste,
-    timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })
-  };
+// CALCULATE
+function calculate() {
+  const get = id => document.getElementById(id).value;
 
-  if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE") {
-    statusEl.className = "status-box error";
-    statusEl.textContent = "⚠️ Admin: Please set the Google Apps Script URL in the code to enable saving.";
+  // Transport
+  const tMode = get("transport");
+  const dist  = parseFloat(get("dist")) || 0;
+  const lt    = parseInt(get("longtrip")) || 0;
+  const ef    = {walk:0, bus:0.07, bike:0.11, carpool:0.06, car:0.21, auto:0.1};
+  const annKm = dist * 2 * 5 * 52;
+  const ltCO2 = [0,80,200,400,900][lt];
+  const tCO2  = Math.round(annKm * (ef[tMode]||0.1) + ltCO2);
+
+  // Food
+  const dBase = {vegan:400, veg:700, mixlow:1000, mix:1400, meat:2200};
+  const fCO2  = Math.round((dBase[get("diet")]||1000)
+    + [0,60,150,300][parseInt(get("eatout"))||0]
+    + [0,50,120,250][parseInt(get("waste_food"))||0]);
+
+  // Energy
+  const eBase = {low:200, med:500, high:950, vhigh:1600};
+  const eCO2  = Math.round((eBase[get("elec")]||500)
+    + [0,100,300,600][parseInt(get("ac"))||0]
+    + [0,20,60,120][parseInt(get("lights"))||0]);
+
+  // Digital
+  const dCO2  = Math.round(
+    [0,40,90,150,220][parseInt(get("screen"))||0]
+    + [0,30,80,160][parseInt(get("stream"))||0]
+    + [0,40,100,200][parseInt(get("online"))||0]);
+
+  // Waste
+  const wCO2  = Math.round(
+    [0,50,120,280][parseInt(get("waste"))||0]
+    + [0,30,80,180][parseInt(get("plastic"))||0]
+    + [0,30,70,130][parseInt(get("water"))||0]);
+
+  total_ = tCO2 + fCO2 + eCO2 + dCO2 + wCO2;
+
+  // Update UI
+  document.getElementById("rNum").textContent   = total_.toLocaleString("en-IN");
+  document.getElementById("bT").textContent     = tCO2+" kg";
+  document.getElementById("bF").textContent     = fCO2+" kg";
+  document.getElementById("bE").textContent     = eCO2+" kg";
+  document.getElementById("bD").textContent     = dCO2+" kg";
+  document.getElementById("bW").textContent     = wCO2+" kg";
+  document.getElementById("bTotal").textContent = total_+" kg";
+
+  const badge = document.getElementById("rBadge");
+  if (total_ < 1000)      { badge.textContent="🟢 Below Average — Well done!"; badge.className="result-badge badge-low"; }
+  else if (total_ < 2200) { badge.textContent="🟡 Average — Room to improve!"; badge.className="result-badge badge-mid"; }
+  else                    { badge.textContent="🔴 Above Average — Let's reduce!"; badge.className="result-badge badge-high"; }
+
+  show("s3"); setProgress(3);
+  submitData(tCO2, fCO2, eCO2, dCO2, wCO2);
+}
+
+// SUBMIT TO GOOGLE SHEET
+function submitData(t, f, e, d, w) {
+  const el = document.getElementById("saveStatus");
+  if (!SCRIPT_URL || SCRIPT_URL === "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE") {
+    el.className = "status err";
+    el.textContent = "⚠️ Admin: Paste your Apps Script URL in the code to enable saving.";
     return;
   }
+  el.className = "status loading";
+  el.textContent = "⏳ Saving your data...";
 
-  fetch(APPS_SCRIPT_URL, {
+  fetch(SCRIPT_URL, {
     method: "POST",
     mode: "no-cors",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+      name: name_, rollNo: roll_,
+      totalCO2: total_,
+      transport: t, food: f, energy: e, digital: d, waste: w,
+      timestamp: new Date().toLocaleString("en-IN", {timeZone:"Asia/Kolkata"})
+    })
   }).then(() => {
-    statusEl.className = "status-box success";
-    statusEl.textContent = "✅ Your footprint data has been saved successfully!";
+    el.className = "status ok";
+    el.textContent = "✅ Your data has been saved successfully!";
   }).catch(() => {
-    statusEl.className = "status-box error";
-    statusEl.textContent = "❌ Could not save data. Please check your internet connection.";
+    el.className = "status err";
+    el.textContent = "❌ Could not save. Check your internet connection.";
   });
 }
 
-updateProgress(1);
+setProgress(1);
 </script>
 </body>
 </html>
