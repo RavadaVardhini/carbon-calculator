@@ -787,7 +787,7 @@ body {
 
 <script>
 // ── PASTE YOUR APPS SCRIPT URL HERE ──
-const SCRIPT_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzoH8N3uiAIfomToIkd2WnGHfVEkM74YIVpWuYH16K8FVuCmXjf1S-u9qmik44ZKyat5w/exec";
 
 let name_ = "", roll_ = "", total_ = 0;
 let checked = [false,false,false,false,false,false];
@@ -904,7 +904,7 @@ function calculate() {
 // SUBMIT TO GOOGLE SHEET
 function submitData(t, f, e, d, w) {
   const el = document.getElementById("saveStatus");
-  if (!SCRIPT_URL || SCRIPT_URL === "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE") {
+  if (!SCRIPT_URL || SCRIPT_URL === "https://script.google.com/macros/s/AKfycbzoH8N3uiAIfomToIkd2WnGHfVEkM74YIVpWuYH16K8FVuCmXjf1S-u9qmik44ZKyat5w/exec") {
     el.className = "status err";
     el.textContent = "⚠️ Admin: Paste your Apps Script URL in the code to enable saving.";
     return;
