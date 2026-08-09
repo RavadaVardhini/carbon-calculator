@@ -747,9 +747,9 @@ function retake() {
 // SUBMIT TO GOOGLE SHEET
 function submitData(t, f, e, d, w) {
   const el = document.getElementById("saveStatus");
-  if (!SCRIPT_URL || SCRIPT_URL === "https://script.google.com/macros/s/AKfycbxhKa8WouPsN59i4UwQ0TeFXV2K9Tj3tDkLePfZjeqkYn3AqkVto73pxhxLbKeN_6kiFA/exec") {
+if (!SCRIPT_URL || SCRIPT_URL === "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE") {
     el.className = "status err";
-    el.textContent = "https://script.google.com/macros/s/AKfycbxhKa8WouPsN59i4UwQ0TeFXV2K9Tj3tDkLePfZjeqkYn3AqkVto73pxhxLbKeN_6kiFA/exec";
+    el.textContent = "⚠️ Admin: Paste your Apps Script URL in the code to enable saving.";
     return;
   }
   el.className = "status loading";
