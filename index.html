@@ -382,7 +382,7 @@ body {
 
 <!-- PROGRESS -->
 <div class="prog-bar-wrap">
-  <div class="prog-label" id="progLabel">Step 1 of 4 — Your Details</div>
+  <div class="prog-label" id="progLabel">Step 1 of 2 — Calculator</div>
   <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
 </div>
 <!-- ===================== SECTION 2: CALCULATOR ===================== -->
@@ -626,40 +626,13 @@ body {
   </div>
 
   <div id="saveStatus" class="status"></div>
-<!-- ===================== SECTION 4: DONE ===================== -->
-<div class="section" id="s4">
-<div class="wrap" style="text-align:center; padding-top:50px;">
-  <div style="font-size:60px; margin-bottom:16px;">🌱</div>
-  <div class="sec-tag" style="text-align:center;">All Done!</div>
-  <div class="sec-title" style="text-align:center;">Great job! Your data is saved.</div>
-  <div class="sec-desc" style="text-align:center; max-width:380px; margin:0 auto 28px;">
-    Your carbon footprint has been recorded.
-  </div>
-
-  <div class="card" style="text-align:left;">
-    <div class="card-head">
-      <div class="card-icon">✅</div>
-      <div>
-        <div class="card-title">What was saved to admin sheet</div>
-        <div class="card-sub">Sent to Google Sheets automatically</div>
-      </div>
-    </div>
-    <div style="font-size:13px; line-height:2; color:var(--text);">
-      📌 Your name and roll number<br/>
-      📌 Total CO₂ (kg/year)<br/>
-      📌 Breakdown: Transport, Food, Energy, Digital, Waste<br/>
-      📌 Date and time of submission
-    </div>
-  </div>
-</div>
-</div>
-
 <script>
 // ── PASTE YOUR APPS SCRIPT URL HERE ──
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzoH8N3uiAIfomToIkd2WnGHfVEkM74YIVpWuYH16K8FVuCmXjf1S-u9qmik44ZKyat5w/exec";
 
 let name_ = "", roll_ = "", total_ = 0;
 let checked = [false,false,false,false,false,false];
+const labels = ["Step 1 of 2 — Calculator", "Step 2 of 2 — Results"];
 
 function setProgress(step) {
   let percent = (step / 2) * 100; 
@@ -673,11 +646,6 @@ function show(id) {
   document.getElementById(id).classList.add("active");
   window.scrollTo({top:0, behavior:"smooth"});
 }
-
-function goS4() {
-  show("s4"); setProgress(2); 
-}
-
 // CHECKLIST
 function tick(n) {
   checked[n-1] = !checked[n-1];
@@ -755,8 +723,10 @@ function calculate() {
   else if (total_ < 2200) { badge.textContent="🟡 Average — Room to improve!"; badge.className="result-badge badge-mid"; }
   else                    { badge.textContent="🔴 Above Average — Let's reduce!"; badge.className="result-badge badge-high"; }
 
-  show("s3"); setProgress(3);
+ show("s3");
+  setProgress(2);
   submitData(tCO2, fCO2, eCO2, dCO2, wCO2);
+}
 }
 
 // SUBMIT TO GOOGLE SHEET
@@ -789,7 +759,7 @@ function submitData(t, f, e, d, w) {
   });
 }
 
-setProgress(2);
+setProgress(1);
 </script>
 </body>
 </html>
