@@ -662,14 +662,10 @@ let name_ = "", roll_ = "", total_ = 0;
 let checked = [false,false,false,false,false,false];
 
 function setProgress(step) {
-  const labels = [
-    "Step 1 of 4 — Your Details",
-    "Step 2 of 4 — Calculator",
-    "Step 3 of 4 — Results & Learning",
-    "Step 4 of 4 — Complete"
-  ];
-  document.getElementById("progLabel").textContent = labels[step-1];
-  document.getElementById("progFill").style.width = (step/4*100)+"%";
+  let percent = (step / 2) * 100; 
+  if(document.getElementById("progress")) document.getElementById("progress").style.width = percent + "%";
+  if(document.getElementById("progLabel")) document.getElementById("progLabel").textContent = labels[step-1];
+  if(document.getElementById("progFill")) document.getElementById("progFill").style.width = percent + "%";
 }
 
 function show(id) {
@@ -678,19 +674,8 @@ function show(id) {
   window.scrollTo({top:0, behavior:"smooth"});
 }
 
-function goS2() {
-  name_ = document.getElementById("sName").value.trim();
-  roll_ = document.getElementById("sRoll").value.trim();
-  if (!name_ || !roll_) {
-    alert("Please enter your Name and Roll Number.");
-    return;
-  }
-  show("s2");
-  setProgress(2);
-}
-
 function goS4() {
-  show("s4"); setProgress(4);
+  show("s4"); setProgress(2); 
 }
 
 // CHECKLIST
