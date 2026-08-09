@@ -385,38 +385,8 @@ body {
   <div class="prog-label" id="progLabel">Step 1 of 4 — Your Details</div>
   <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
 </div>
-
-<!-- ===================== SECTION 1: DETAILS ===================== -->
-<div class="section active" id="s1">
-<div class="wrap">
-  <div class="sec-tag">Let's Begin</div>
-  <div class="sec-title">Who are you? 👋</div>
-  <div class="sec-desc">Enter your details so your result can be saved and tracked by your facilitator.</div>
-
-  <div class="card">
-    <div class="card-head">
-      <div class="card-icon">🎓</div>
-      <div>
-        <div class="card-title">Student Details</div>
-        <div class="card-sub">Both fields are required</div>
-      </div>
-    </div>
-    <div class="field">
-      <label>Full Name</label>
-      <input type="text" id="sName" placeholder="Type your full name" />
-    </div>
-    <div class="field">
-      <label>Roll Number</label>
-      <input type="text" id="sRoll" placeholder="Type your roll number" />
-    </div>
-  </div>
-
-  <button class="btn" onclick="goS2()">Next — Start Calculator →</button>
-</div>
-</div>
-
 <!-- ===================== SECTION 2: CALCULATOR ===================== -->
-<div class="section" id="s2">
+<div class="section active" id="s2">
 <div class="wrap">
   <div class="sec-tag">Carbon Calculator</div>
   <div class="sec-title">Your Daily Habits 🌍</div>
@@ -711,8 +681,12 @@ function show(id) {
 function goS2() {
   name_ = document.getElementById("sName").value.trim();
   roll_ = document.getElementById("sRoll").value.trim();
-  if (!name_ || !roll_) { alert("Please enter your Name and Roll Number."); return; }
-  show("s2"); setProgress(2);
+  if (!name_ || !roll_) {
+    alert("Please enter your Name and Roll Number.");
+    return;
+  }
+  show("s2");
+  setProgress(2);
 }
 
 function goS4() {
@@ -830,7 +804,7 @@ function submitData(t, f, e, d, w) {
   });
 }
 
-setProgress(1);
+setProgress(2);
 </script>
 </body>
 </html>
