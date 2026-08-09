@@ -6,7 +6,7 @@
 <title>Carbon Footprint Calculator</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
-
+ 
 :root {
   --green: #2d6a4f;
   --green-light: #52b788;
@@ -20,16 +20,16 @@
   --border: #c8e6c9;
   --radius: 14px;
 }
-
+ 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-
+ 
 body {
   font-family: 'Nunito', sans-serif;
   background: var(--bg);
   color: var(--text);
   font-size: 15px;
 }
-
+ 
 /* HERO */
 .hero {
   background: linear-gradient(135deg, #1a3a2a, #2d6a4f);
@@ -59,7 +59,7 @@ body {
   margin: 0 auto;
   line-height: 1.6;
 }
-
+ 
 /* PROGRESS */
 .prog-bar-wrap {
   background: white;
@@ -87,17 +87,17 @@ body {
   transition: width 0.4s ease;
   width: 0%;
 }
-
+ 
 /* SECTIONS */
 .section { display: none; }
 .section.active { display: block; }
-
+ 
 .wrap {
-  max-width: 620px;
+  max-width: 680px;
   margin: 0 auto;
   padding: 32px 18px 72px;
 }
-
+ 
 .sec-tag {
   font-size: 11px;
   font-weight: 800;
@@ -116,9 +116,45 @@ body {
   font-size: 0.88rem;
   color: var(--muted);
   line-height: 1.6;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
 }
-
+ 
+/* TABS — side by side category switcher (replaces long vertical scroll) */
+.tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  margin-bottom: 22px;
+  scrollbar-width: thin;
+}
+.tab {
+  flex: 1 1 0;
+  min-width: 78px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 6px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border);
+  background: white;
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  transition: border-color 0.2s, background 0.2s, transform 0.1s;
+}
+.tab:hover { transform: translateY(-1px); }
+.tab-icon { font-size: 19px; }
+.tab-name { font-size: 10.5px; font-weight: 700; color: var(--muted); text-align: center; line-height: 1.2; }
+.tab.active { border-color: var(--green); background: var(--green-bg); }
+.tab.active .tab-name { color: #1b4332; }
+.tab-check {
+  font-size: 9px;
+  color: var(--green);
+  font-weight: 800;
+  min-height: 11px;
+}
+ 
 /* CARD */
 .card {
   background: var(--white);
@@ -143,7 +179,7 @@ body {
 }
 .card-title { font-size: 0.95rem; font-weight: 700; color: #1a3a2a; }
 .card-sub { font-size: 11px; color: var(--muted); }
-
+ 
 /* FIELDS */
 .field { margin-bottom: 14px; }
 .field label {
@@ -170,7 +206,27 @@ body {
   border-color: var(--green);
 }
 .field select option[value=""] { color: #aaa; }
-
+ 
+/* NAV ROW (prev / next between tabs) */
+.tab-nav {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+.nav-btn {
+  flex: 1;
+  background: white;
+  color: var(--green);
+  border: 1.5px solid var(--green);
+  border-radius: 12px;
+  padding: 13px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+ 
 /* BUTTONS */
 .btn {
   width: 100%;
@@ -185,10 +241,11 @@ body {
   cursor: pointer;
   transition: opacity 0.2s, transform 0.1s;
   letter-spacing: 0.3px;
+  margin-top: 6px;
 }
 .btn:hover { opacity: 0.9; transform: translateY(-1px); }
 .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
-
+ 
 /* RESULT */
 .result-box {
   background: linear-gradient(135deg, #1a3a2a, #2d6a4f);
@@ -216,12 +273,15 @@ body {
 .badge-low { background: #52b788; }
 .badge-mid { background: var(--yellow); }
 .badge-high { background: var(--red); }
-
+ 
 .grid4 {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   margin-bottom: 20px;
+}
+@media (max-width: 480px) {
+  .grid4 { grid-template-columns: repeat(2, 1fr); }
 }
 .mini-card {
   background: white;
@@ -233,7 +293,7 @@ body {
 .mini-icon { font-size: 22px; margin-bottom: 4px; }
 .mini-val { font-size: 1.1rem; font-weight: 800; color: #1a3a2a; }
 .mini-cat { font-size: 11px; color: var(--muted); margin-top: 2px; }
-
+ 
 /* STATUS */
 .status {
   border-radius: 10px;
@@ -246,367 +306,303 @@ body {
 .status.ok  { background: #d8f3dc; color: #1b4332; display: block; }
 .status.err { background: #ffe5e0; color: #7d1a1a; display: block; }
 .status.loading { background: #e8f4fd; color: #023e8a; display: block; }
-
-/* NOTICE BOX */
-.notice {
-  background: #fff8e1;
-  border: 2px solid #f4a261;
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 20px;
-  font-size: 13px;
-  line-height: 1.6;
-  color: #5a3e00;
-}
-.notice strong { font-size: 14px; display: block; margin-bottom: 4px; }
-
-/* INFOGRAPHIC CARDS */
-.info-card {
-  border-radius: var(--radius);
-  padding: 24px 20px;
-  margin-bottom: 14px;
-  position: relative;
-  overflow: hidden;
-  color: white;
-}
-.ic-green { background: linear-gradient(135deg, #1b4332, #2d6a4f); }
-.ic-amber { background: linear-gradient(135deg, #7b3f00, #d4862b); }
-.ic-blue  { background: linear-gradient(135deg, #023e8a, #0077b6); }
-.ic-red   { background: linear-gradient(135deg, #7d1a1a, #c1440e); }
-.ic-teal  { background: linear-gradient(135deg, #004d40, #00897b); }
-.ic-purple{ background: linear-gradient(135deg, #4a0072, #7b2ff7); }
-
-.ic-emoji {
-  position: absolute;
-  right: 16px; top: 16px;
-  font-size: 44px;
-  opacity: 0.2;
-}
-.ic-tag {
-  display: inline-block;
-  background: rgba(255,255,255,0.18);
-  border-radius: 100px;
-  padding: 3px 10px;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  margin-bottom: 10px;
-}
-.ic-big {
-  font-size: 3rem;
-  font-weight: 800;
-  line-height: 1;
-  margin-bottom: 2px;
-}
-.ic-unit { font-size: 13px; opacity: 0.72; margin-bottom: 10px; }
-.ic-text { font-size: 0.88rem; line-height: 1.6; opacity: 0.9; }
-
-/* CHECKLIST */
-.check-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+ 
+.retake-btn {
+  width: 100%;
   background: white;
-  border: 1.5px solid var(--border);
-  border-radius: 10px;
-  padding: 12px 14px;
-  margin-bottom: 8px;
-  cursor: pointer;
-  transition: border-color 0.2s, background 0.2s;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text);
-  user-select: none;
-}
-.check-item.done {
-  border-color: var(--green);
-  background: #f0faf3;
   color: var(--green);
+  border: 1.5px solid var(--green);
+  border-radius: 12px;
+  padding: 13px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 800;
+  cursor: pointer;
 }
-.check-box {
-  width: 22px; height: 22px;
-  border: 2px solid var(--border);
-  border-radius: 6px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 13px;
-  flex-shrink: 0;
-  transition: all 0.2s;
-}
-.check-item.done .check-box {
-  background: var(--green);
-  border-color: var(--green);
-  color: white;
-}
-.check-progress {
-  text-align: center;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--muted);
-  margin: 10px 0 16px;
-}
-
-/* DIVIDER */
-.divider {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 24px 0;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-.divider::before, .divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-}
-
+ 
 @media (max-width: 420px) {
-  .ic-big { font-size: 2.2rem; }
   .result-num { font-size: 2.8rem; }
+  .tab-name { display: none; }
+  .tab { min-width: 44px; padding: 10px 4px; }
 }
 </style>
 </head>
 <body>
-
+ 
 <!-- HERO -->
 <div class="hero">
   <div class="hero-tag">🌱 Campus Green Initiative 2025</div>
   <h1>Your <span>Carbon Footprint</span> Calculator</h1>
   <p>Find out how your daily habits affect the environment — takes just 5 minutes!</p>
 </div>
-
+ 
 <!-- PROGRESS -->
 <div class="prog-bar-wrap">
   <div class="prog-label" id="progLabel">Step 1 of 2 — Calculator</div>
   <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
 </div>
+ 
 <!-- ===================== SECTION 2: CALCULATOR ===================== -->
 <div class="section active" id="s2">
 <div class="wrap">
   <div class="sec-tag">Carbon Calculator</div>
   <div class="sec-title">Your Daily Habits 🌍</div>
-  <div class="sec-desc">Answer honestly — every option is okay! No judgment here. 😊</div>
-
-  <!-- TRANSPORT -->
-  <div class="card">
-    <div class="card-head">
-      <div class="card-icon">🚗</div>
-      <div>
-        <div class="card-title">Getting Around</div>
-        <div class="card-sub">How you travel to college</div>
-      </div>
+  <div class="sec-desc">Answer honestly — every option is okay! No judgment here. 😊 Tap a category below to jump between sections instead of scrolling.</div>
+ 
+  <!-- TABS: categories side by side -->
+  <div class="tabs" id="tabBar">
+    <div class="tab active" data-cat="0" onclick="goTab(0)">
+      <div class="tab-icon">🚗</div><div class="tab-name">Transport</div>
+      <div class="tab-check" id="chk0"></div>
     </div>
-    <div class="field">
-      <label>How do you usually travel to college?</label>
-      <select id="transport">
-        <option value="">— Select one —</option>
-        <option value="walk">🚶 Walk or cycle</option>
-        <option value="bus">🚌 Public bus or metro</option>
-        <option value="bike">🛵 Two-wheeler (petrol)</option>
-        <option value="carpool">🚗 Car (shared with others)</option>
-        <option value="car">🚗 Car (alone)</option>
-        <option value="auto">🛺 Auto-rickshaw</option>
-      </select>
+    <div class="tab" data-cat="1" onclick="goTab(1)">
+      <div class="tab-icon">🍽️</div><div class="tab-name">Food</div>
+      <div class="tab-check" id="chk1"></div>
     </div>
-    <div class="field">
-      <label>Distance from home to college (km)</label>
-      <input type="number" id="dist" placeholder="e.g. 5" min="0" max="100" />
+    <div class="tab" data-cat="2" onclick="goTab(2)">
+      <div class="tab-icon">⚡</div><div class="tab-name">Energy</div>
+      <div class="tab-check" id="chk2"></div>
     </div>
-    <div class="field">
-      <label>Long trips per year (train, bus or flight)?</label>
-      <select id="longtrip">
-        <option value="">— Select one —</option>
-        <option value="0">None</option>
-        <option value="1">1–2 train or bus trips</option>
-        <option value="2">3–5 train or bus trips</option>
-        <option value="3">1–2 flights</option>
-        <option value="4">3 or more flights</option>
-      </select>
+    <div class="tab" data-cat="3" onclick="goTab(3)">
+      <div class="tab-icon">📱</div><div class="tab-name">Digital</div>
+      <div class="tab-check" id="chk3"></div>
+    </div>
+    <div class="tab" data-cat="4" onclick="goTab(4)">
+      <div class="tab-icon">♻️</div><div class="tab-name">Waste</div>
+      <div class="tab-check" id="chk4"></div>
     </div>
   </div>
-
-  <!-- FOOD -->
-  <div class="card">
-    <div class="card-head">
-      <div class="card-icon">🍽️</div>
-      <div>
-        <div class="card-title">Food & Eating</div>
-        <div class="card-sub">What you eat every day</div>
+ 
+  <!-- CATEGORY 0: TRANSPORT -->
+  <div class="cat-panel" data-cat="0">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon">🚗</div>
+        <div>
+          <div class="card-title">Getting Around</div>
+          <div class="card-sub">How you travel to college</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>How do you usually travel to college?</label>
+        <select id="transport">
+          <option value="">— Select one —</option>
+          <option value="walk">🚶 Walk or cycle</option>
+          <option value="bus">🚌 Public bus or metro</option>
+          <option value="bike">🛵 Two-wheeler (petrol)</option>
+          <option value="carpool">🚗 Car (shared with others)</option>
+          <option value="car">🚗 Car (alone)</option>
+          <option value="auto">🛺 Auto-rickshaw</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Distance from home to college (km)</label>
+        <input type="number" id="dist" placeholder="e.g. 5" min="0" max="100" />
+      </div>
+      <div class="field">
+        <label>Long trips per year (train, bus or flight)?</label>
+        <select id="longtrip">
+          <option value="">— Select one —</option>
+          <option value="0">None</option>
+          <option value="1">1–2 train or bus trips</option>
+          <option value="2">3–5 train or bus trips</option>
+          <option value="3">1–2 flights</option>
+          <option value="4">3 or more flights</option>
+        </select>
       </div>
     </div>
-    <div class="field">
-      <label>What best describes your diet?</label>
-      <select id="diet">
-        <option value="">— Select one —</option>
-        <option value="vegan">🥦 Fully plant-based (no dairy or eggs)</option>
-        <option value="veg">🥗 Vegetarian (dairy and eggs are ok)</option>
-        <option value="mixlow">🍛 Mostly vegetarian, sometimes non-veg</option>
-        <option value="mix">🍗 Non-veg most days</option>
-        <option value="meat">🥩 Meat or chicken at every meal</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>How often do you order food or eat out?</label>
-      <select id="eatout">
-        <option value="">— Select one —</option>
-        <option value="0">Rarely — mostly home food</option>
-        <option value="1">Once or twice a week</option>
-        <option value="2">3 to 5 times a week</option>
-        <option value="3">Almost every day</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>How much food do you usually waste?</label>
-      <select id="waste_food">
-        <option value="">— Select one —</option>
-        <option value="0">I usually finish everything</option>
-        <option value="1">I leave a little sometimes</option>
-        <option value="2">I often have leftovers that get thrown</option>
-        <option value="3">I waste quite a lot of food</option>
-      </select>
-    </div>
   </div>
-
-  <!-- ENERGY -->
-  <div class="card">
-    <div class="card-head">
-      <div class="card-icon">⚡</div>
-      <div>
-        <div class="card-title">Home Energy</div>
-        <div class="card-sub">Electricity use at home</div>
+ 
+  <!-- CATEGORY 1: FOOD -->
+  <div class="cat-panel" data-cat="1" style="display:none">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon">🍽️</div>
+        <div>
+          <div class="card-title">Food & Eating</div>
+          <div class="card-sub">What you eat every day</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>What best describes your diet?</label>
+        <select id="diet">
+          <option value="">— Select one —</option>
+          <option value="vegan">🥦 Fully plant-based (no dairy or eggs)</option>
+          <option value="veg">🥗 Vegetarian (dairy and eggs are ok)</option>
+          <option value="mixlow">🍛 Mostly vegetarian, sometimes non-veg</option>
+          <option value="mix">🍗 Non-veg most days</option>
+          <option value="meat">🥩 Meat or chicken at every meal</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>How often do you order food or eat out?</label>
+        <select id="eatout">
+          <option value="">— Select one —</option>
+          <option value="0">Rarely — mostly home food</option>
+          <option value="1">Once or twice a week</option>
+          <option value="2">3 to 5 times a week</option>
+          <option value="3">Almost every day</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>How much food do you usually waste?</label>
+        <select id="waste_food">
+          <option value="">— Select one —</option>
+          <option value="0">I usually finish everything</option>
+          <option value="1">I leave a little sometimes</option>
+          <option value="2">I often have leftovers that get thrown</option>
+          <option value="3">I waste quite a lot of food</option>
+        </select>
       </div>
     </div>
-    <div class="field">
-      <label>Monthly electricity bill at home (approx.)</label>
-      <select id="elec">
-        <option value="">— Select one —</option>
-        <option value="low">Below ₹500</option>
-        <option value="med">₹500 – ₹1500</option>
-        <option value="high">₹1500 – ₹3000</option>
-        <option value="vhigh">Above ₹3000</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>Do you use AC at home?</label>
-      <select id="ac">
-        <option value="">— Select one —</option>
-        <option value="0">No AC at home</option>
-        <option value="1">Only in summer (2–3 months)</option>
-        <option value="2">About half the year</option>
-        <option value="3">Almost all year</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>How often do you switch off lights and fans when leaving a room?</label>
-      <select id="lights">
-        <option value="">— Select one —</option>
-        <option value="0">Always — I never forget</option>
-        <option value="1">Usually yes</option>
-        <option value="2">Sometimes I forget</option>
-        <option value="3">I rarely switch them off</option>
-      </select>
-    </div>
   </div>
-
-  <!-- DIGITAL -->
-  <div class="card">
-    <div class="card-head">
-      <div class="card-icon">📱</div>
-      <div>
-        <div class="card-title">Digital Life</div>
-        <div class="card-sub">Your screen and online habits</div>
+ 
+  <!-- CATEGORY 2: ENERGY -->
+  <div class="cat-panel" data-cat="2" style="display:none">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon">⚡</div>
+        <div>
+          <div class="card-title">Home Energy</div>
+          <div class="card-sub">Electricity use at home</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Monthly electricity bill at home (approx.)</label>
+        <select id="elec">
+          <option value="">— Select one —</option>
+          <option value="low">Below ₹500</option>
+          <option value="med">₹500 – ₹1500</option>
+          <option value="high">₹1500 – ₹3000</option>
+          <option value="vhigh">Above ₹3000</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Do you use AC at home?</label>
+        <select id="ac">
+          <option value="">— Select one —</option>
+          <option value="0">No AC at home</option>
+          <option value="1">Only in summer (2–3 months)</option>
+          <option value="2">About half the year</option>
+          <option value="3">Almost all year</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>How often do you switch off lights and fans when leaving a room?</label>
+        <select id="lights">
+          <option value="">— Select one —</option>
+          <option value="0">Always — I never forget</option>
+          <option value="1">Usually yes</option>
+          <option value="2">Sometimes I forget</option>
+          <option value="3">I rarely switch them off</option>
+        </select>
       </div>
     </div>
-    <div class="field">
-      <label>Total screen time per day (phone + laptop + TV)?</label>
-      <select id="screen">
-        <option value="">— Select one —</option>
-        <option value="1">Under 3 hours</option>
-        <option value="2">3 to 6 hours</option>
-        <option value="3">6 to 9 hours</option>
-        <option value="4">More than 9 hours</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>How often do you stream videos (YouTube, Netflix, Reels, etc.)?</label>
-      <select id="stream">
-        <option value="">— Select one —</option>
-        <option value="0">Rarely</option>
-        <option value="1">About 1–2 hours a day</option>
-        <option value="2">3–5 hours a day</option>
-        <option value="3">More than 5 hours a day</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>How often do you shop online (clothes, gadgets, food delivery)?</label>
-      <select id="online">
-        <option value="">— Select one —</option>
-        <option value="0">Rarely — a few times a year</option>
-        <option value="1">Once or twice a month</option>
-        <option value="2">Every week</option>
-        <option value="3">Almost every day</option>
-      </select>
-    </div>
   </div>
-
-  <!-- WASTE -->
-  <div class="card">
-    <div class="card-head">
-      <div class="card-icon">♻️</div>
-      <div>
-        <div class="card-title">Waste & Water</div>
-        <div class="card-sub">Everyday consumption habits</div>
+ 
+  <!-- CATEGORY 3: DIGITAL -->
+  <div class="cat-panel" data-cat="3" style="display:none">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon">📱</div>
+        <div>
+          <div class="card-title">Digital Life</div>
+          <div class="card-sub">Your screen and online habits</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Total screen time per day (phone + laptop + TV)?</label>
+        <select id="screen">
+          <option value="">— Select one —</option>
+          <option value="1">Under 3 hours</option>
+          <option value="2">3 to 6 hours</option>
+          <option value="3">6 to 9 hours</option>
+          <option value="4">More than 9 hours</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>How often do you stream videos (YouTube, Netflix, Reels, etc.)?</label>
+        <select id="stream">
+          <option value="">— Select one —</option>
+          <option value="0">Rarely</option>
+          <option value="1">About 1–2 hours a day</option>
+          <option value="2">3–5 hours a day</option>
+          <option value="3">More than 5 hours a day</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>How often do you shop online (clothes, gadgets, food delivery)?</label>
+        <select id="online">
+          <option value="">— Select one —</option>
+          <option value="0">Rarely — a few times a year</option>
+          <option value="1">Once or twice a month</option>
+          <option value="2">Every week</option>
+          <option value="3">Almost every day</option>
+        </select>
       </div>
     </div>
-    <div class="field">
-      <label>How do you handle waste at home?</label>
-      <select id="waste">
-        <option value="">— Select one —</option>
-        <option value="0">I separate dry and wet waste</option>
-        <option value="1">I try to but not always</option>
-        <option value="2">Everything goes in one bin</option>
-        <option value="3">Waste is burned or dumped outside</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>How often do you use plastic bags or single-use plastic?</label>
-      <select id="plastic">
-        <option value="">— Select one —</option>
-        <option value="0">Never — I carry my own bag and bottle</option>
-        <option value="1">Sometimes, but I try to avoid it</option>
-        <option value="2">Fairly often</option>
-        <option value="3">Almost every day</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>How long is your daily bath or shower?</label>
-      <select id="water">
-        <option value="">— Select one —</option>
-        <option value="0">Under 5 minutes (bucket bath)</option>
-        <option value="1">5 to 10 minutes</option>
-        <option value="2">10 to 15 minutes</option>
-        <option value="3">More than 15 minutes</option>
-      </select>
+  </div>
+ 
+  <!-- CATEGORY 4: WASTE -->
+  <div class="cat-panel" data-cat="4" style="display:none">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon">♻️</div>
+        <div>
+          <div class="card-title">Waste & Water</div>
+          <div class="card-sub">Everyday consumption habits</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>How do you handle waste at home?</label>
+        <select id="waste">
+          <option value="">— Select one —</option>
+          <option value="0">I separate dry and wet waste</option>
+          <option value="1">I try to but not always</option>
+          <option value="2">Everything goes in one bin</option>
+          <option value="3">Waste is burned or dumped outside</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>How often do you use plastic bags or single-use plastic?</label>
+        <select id="plastic">
+          <option value="">— Select one —</option>
+          <option value="0">Never — I carry my own bag and bottle</option>
+          <option value="1">Sometimes, but I try to avoid it</option>
+          <option value="2">Fairly often</option>
+          <option value="3">Almost every day</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>How long is your daily bath or shower?</label>
+        <select id="water">
+          <option value="">— Select one —</option>
+          <option value="0">Under 5 minutes (bucket bath)</option>
+          <option value="1">5 to 10 minutes</option>
+          <option value="2">10 to 15 minutes</option>
+          <option value="3">More than 15 minutes</option>
+        </select>
+      </div>
     </div>
   </div>
-
+ 
+  <div class="tab-nav">
+    <button class="nav-btn" id="prevBtn" onclick="prevTab()" disabled>← Back</button>
+    <button class="nav-btn" id="nextBtn2" onclick="nextTab()">Next →</button>
+  </div>
+ 
   <button class="btn" onclick="calculate()">🌿 Calculate My Footprint →</button>
 </div>
 </div>
-
-<!-- ===================== SECTION 3: RESULTS + INFOGRAPHICS ===================== -->
+ 
+<!-- ===================== SECTION 3: RESULTS ===================== -->
 <div class="section" id="s3">
 <div class="wrap">
-
+ 
   <div class="sec-tag">Your Result</div>
   <div class="sec-title">Here's your footprint 🌍</div>
   <div class="sec-desc">This is how much CO₂ your daily habits produce in a year.</div>
-
+ 
   <!-- RESULT -->
   <div class="result-box">
     <div class="result-label">Your Annual CO₂ Emissions</div>
@@ -614,7 +610,7 @@ body {
     <div class="result-unit">kg of CO₂ per year</div>
     <div class="result-badge" id="rBadge">—</div>
   </div>
-
+ 
   <!-- BREAKDOWN -->
   <div class="grid4">
     <div class="mini-card"><div class="mini-icon">🚗</div><div class="mini-val" id="bT">—</div><div class="mini-cat">Transport</div></div>
@@ -624,56 +620,71 @@ body {
     <div class="mini-card"><div class="mini-icon">♻️</div><div class="mini-val" id="bW">—</div><div class="mini-cat">Waste</div></div>
     <div class="mini-card"><div class="mini-icon">📊</div><div class="mini-val" id="bTotal">—</div><div class="mini-cat">Total kg/yr</div></div>
   </div>
-
+ 
   <div id="saveStatus" class="status"></div>
+ 
+  <button class="retake-btn" onclick="retake()">↺ Retake the Calculator</button>
+</div>
+</div>
+ 
 <script>
 // ── PASTE YOUR APPS SCRIPT URL HERE ──
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzoH8N3uiAIfomToIkd2WnGHfVEkM74YIVpWuYH16K8FVuCmXjf1S-u9qmik44ZKyat5w/exec";
-
+ 
 let name_ = "", roll_ = "", total_ = 0;
-let checked = [false,false,false,false,false,false];
+let currentCat = 0;
+const TOTAL_CATS = 5;
+const catFieldMap = [
+  ["transport","dist","longtrip"],
+  ["diet","eatout","waste_food"],
+  ["elec","ac","lights"],
+  ["screen","stream","online"],
+  ["waste","plastic","water"]
+];
 const labels = ["Step 1 of 2 — Calculator", "Step 2 of 2 — Results"];
-
+ 
 function setProgress(step) {
-  let percent = (step / 2) * 100; 
-  if(document.getElementById("progress")) document.getElementById("progress").style.width = percent + "%";
-  if(document.getElementById("progLabel")) document.getElementById("progLabel").textContent = labels[step-1];
-  if(document.getElementById("progFill")) document.getElementById("progFill").style.width = percent + "%";
+  let percent = (step / 2) * 100;
+  if (document.getElementById("progLabel")) document.getElementById("progLabel").textContent = labels[step-1];
+  if (document.getElementById("progFill")) document.getElementById("progFill").style.width = percent + "%";
 }
-
+ 
 function show(id) {
   document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
   document.getElementById(id).classList.add("active");
   window.scrollTo({top:0, behavior:"smooth"});
 }
-// CHECKLIST
-function tick(n) {
-  checked[n-1] = !checked[n-1];
-  const item = document.getElementById("c"+n);
-  const box  = document.getElementById("cb"+n);
-  if (checked[n-1]) {
-    item.classList.add("done");
-    box.textContent = "✓";
-  } else {
-    item.classList.remove("done");
-    box.textContent = "";
-  }
-  const done = checked.filter(Boolean).length;
-  document.getElementById("checkCount").textContent = done + " of 6 cards marked as read";
-  const btn = document.getElementById("nextBtn");
-  if (done === 6) {
-    btn.disabled = false;
-    btn.textContent = "Go to Post Survey →";
-  } else {
-    btn.disabled = true;
-    btn.textContent = "🔒 Mark all 6 cards to continue (" + done + "/6)";
-  }
+ 
+// TAB SWITCHING (side-by-side categories, one panel visible at a time)
+function goTab(n) {
+  currentCat = n;
+  document.querySelectorAll(".cat-panel").forEach(p => {
+    p.style.display = (parseInt(p.dataset.cat) === n) ? "block" : "none";
+  });
+  document.querySelectorAll(".tab").forEach(t => {
+    t.classList.toggle("active", parseInt(t.dataset.cat) === n);
+  });
+  document.getElementById("prevBtn").disabled = (n === 0);
+  document.getElementById("nextBtn2").disabled = (n === TOTAL_CATS - 1);
+  markTabComplete();
 }
-
+function nextTab() { if (currentCat < TOTAL_CATS - 1) goTab(currentCat + 1); }
+function prevTab() { if (currentCat > 0) goTab(currentCat - 1); }
+ 
+// mark a tab with a check once all its fields have a value
+function markTabComplete() {
+  catFieldMap.forEach((fields, i) => {
+    const filled = fields.every(id => document.getElementById(id).value !== "");
+    document.getElementById("chk" + i).textContent = filled ? "✓ done" : "";
+  });
+}
+document.addEventListener("input", markTabComplete);
+document.addEventListener("change", markTabComplete);
+ 
 // CALCULATE
 function calculate() {
   const get = id => document.getElementById(id).value;
-
+ 
   // Transport
   const tMode = get("transport");
   const dist  = parseFloat(get("dist")) || 0;
@@ -682,33 +693,33 @@ function calculate() {
   const annKm = dist * 2 * 5 * 52;
   const ltCO2 = [0,80,200,400,900][lt];
   const tCO2  = Math.round(annKm * (ef[tMode]||0.1) + ltCO2);
-
+ 
   // Food
   const dBase = {vegan:400, veg:700, mixlow:1000, mix:1400, meat:2200};
   const fCO2  = Math.round((dBase[get("diet")]||1000)
     + [0,60,150,300][parseInt(get("eatout"))||0]
     + [0,50,120,250][parseInt(get("waste_food"))||0]);
-
+ 
   // Energy
   const eBase = {low:200, med:500, high:950, vhigh:1600};
   const eCO2  = Math.round((eBase[get("elec")]||500)
     + [0,100,300,600][parseInt(get("ac"))||0]
     + [0,20,60,120][parseInt(get("lights"))||0]);
-
+ 
   // Digital
   const dCO2  = Math.round(
     [0,40,90,150,220][parseInt(get("screen"))||0]
     + [0,30,80,160][parseInt(get("stream"))||0]
     + [0,40,100,200][parseInt(get("online"))||0]);
-
+ 
   // Waste
   const wCO2  = Math.round(
     [0,50,120,280][parseInt(get("waste"))||0]
     + [0,30,80,180][parseInt(get("plastic"))||0]
     + [0,30,70,130][parseInt(get("water"))||0]);
-
+ 
   total_ = tCO2 + fCO2 + eCO2 + dCO2 + wCO2;
-
+ 
   // Update UI
   document.getElementById("rNum").textContent   = total_.toLocaleString("en-IN");
   document.getElementById("bT").textContent     = tCO2+" kg";
@@ -717,18 +728,22 @@ function calculate() {
   document.getElementById("bD").textContent     = dCO2+" kg";
   document.getElementById("bW").textContent     = wCO2+" kg";
   document.getElementById("bTotal").textContent = total_+" kg";
-
+ 
   const badge = document.getElementById("rBadge");
   if (total_ < 1000)      { badge.textContent="🟢 Below Average — Well done!"; badge.className="result-badge badge-low"; }
   else if (total_ < 2200) { badge.textContent="🟡 Average — Room to improve!"; badge.className="result-badge badge-mid"; }
   else                    { badge.textContent="🔴 Above Average — Let's reduce!"; badge.className="result-badge badge-high"; }
-
- show("s3");
+ 
+  show("s3");
   setProgress(2);
   submitData(tCO2, fCO2, eCO2, dCO2, wCO2);
 }
+ 
+function retake() {
+  show("s2");
+  setProgress(1);
 }
-
+ 
 // SUBMIT TO GOOGLE SHEET
 function submitData(t, f, e, d, w) {
   const el = document.getElementById("saveStatus");
@@ -739,7 +754,7 @@ function submitData(t, f, e, d, w) {
   }
   el.className = "status loading";
   el.textContent = "⏳ Saving your data...";
-
+ 
   fetch(SCRIPT_URL, {
     method: "POST",
     mode: "no-cors",
@@ -758,8 +773,10 @@ function submitData(t, f, e, d, w) {
     el.textContent = "❌ Could not save. Check your internet connection.";
   });
 }
-
+ 
 setProgress(1);
+goTab(0);
 </script>
 </body>
 </html>
+ 
