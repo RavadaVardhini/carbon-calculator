@@ -591,7 +591,7 @@ body {
     <button class="nav-btn" id="nextBtn2" onclick="nextTab()">Next →</button>
   </div>
  
-  <button class="btn" onclick="calculate()">🌿 Calculate My Footprint →</button>
+  <button class="btn" id="calcBtn" style="display: none;" onclick="calculate()">🌿 Calculate My Footprint →</button>
 </div>
 </div>
  
@@ -664,8 +664,14 @@ function goTab(n) {
   document.querySelectorAll(".tab").forEach(t => {
     t.classList.toggle("active", parseInt(t.dataset.cat) === n);
   });
+  
   document.getElementById("prevBtn").disabled = (n === 0);
-  document.getElementById("nextBtn2").disabled = (n === TOTAL_CATS - 1);
+
+  // Show Calculate button only on the last tab (Waste), otherwise show Next button
+  const isLast = (n === TOTAL_CATS - 1);
+  document.getElementById("nextBtn2").style.display = isLast ? "none" : "block";
+  document.getElementById("calcBtn").style.display = isLast ? "block" : "none";
+
   markTabComplete();
 }
 function nextTab() { if (currentCat < TOTAL_CATS - 1) goTab(currentCat + 1); }
