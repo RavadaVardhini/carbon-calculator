@@ -18,7 +18,7 @@ const db = getFirestore();
 const messaging = getMessaging();
 
 // ---- change this once: the date your Week 1 email/notification went out ----
-const CAMPAIGN_START_DATE = "2026-08-25"; // YYYY-MM-DD, a Monday works best
+const CAMPAIGN_START_DATE = "2026-08-23"; // YYYY-MM-DD, a Monday works best
 
 function getCurrentWeekNumber() {
   const start = new Date(CAMPAIGN_START_DATE);
