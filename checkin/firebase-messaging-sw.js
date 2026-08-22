@@ -3,7 +3,7 @@ importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-com
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js');
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAui-YsMCklxUVAJan7ogbcbon2WUAmexg",
+  apiKey: "AIzaSyD6Cpb6BgLIzvHva1AV9JMiobjmEpjqCr4",
   authDomain: "ecotrack-292ab.firebaseapp.com",
   projectId: "ecotrack-292ab",
   storageBucket: "ecotrack-292ab.firebasestorage.app",
