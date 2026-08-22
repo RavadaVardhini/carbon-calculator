@@ -1,0 +1,28 @@
+name: EcoTrack Weekly Check-in
+
+on:
+  schedule:
+    # Runs every Monday at 9:00 AM IST (3:30 AM UTC)
+    - cron: '30 3 * * 1'
+  workflow_dispatch: {} # lets you also trigger it manually from the Actions tab, for testing
+
+jobs:
+  send-checkin:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install firebase-admin
+
+      - name: Send weekly check-in notification
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: node send-weekly-checkin-actions.js
+        
