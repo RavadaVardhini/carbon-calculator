@@ -256,7 +256,8 @@ This approach helps connect environmental awareness with measurable student part
 
 ### Check-in CSV Export
 
-<img width="1916" height="1025" alt="image" src="https://github.com/user-attachments/assets/6efdad52-58ed-411d-99a3-188a04658d73" />
+<img width="1916" height="1025" alt="image" src="https://github.com/user-attachments/assets/3ebd2436-c40d-4b77-a355-a0d29875e925" />
+
 
 ## 👥 Project Team
 
