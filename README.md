@@ -247,19 +247,13 @@ This approach helps connect environmental awareness with measurable student part
 
 ### Carbon Footprint Calculator
 
-![Carbon Footprint Calculator](images/calculator.png)
-
-### Awareness Survey
-
-![Google Form](images/google-form.png)
+![Carbon Footprint Calculator](<img width="1917" height="1031" alt="calculator" src="https://github.com/user-attachments/assets/ca0abd9b-85d9-406d-b0b3-f7bf4e3e051b" />)
+<img width="1917" height="1016" alt="calculator2" src="https://github.com/user-attachments/assets/ab8cea87-5dac-4d46-ad78-795d6bbaee5d" />
 
 ### Daily Green Action Notification
 
-![Daily Notification](images/notification.png)
-
-### Firebase Check-in Data
-
-![Firestore Check-ins](images/firestore.png)
+![Daily Notification](<img width="1917" height="1027" alt="Screenshot 2026-09-19 191947" src="https://github.com/user-attachments/assets/461f622c-95b3-4c6a-bb49-5ae888e81e0d" />
+)
 
 ### Check-in CSV Export
 
