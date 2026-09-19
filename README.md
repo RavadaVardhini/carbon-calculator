@@ -243,6 +243,9 @@ The system connects awareness with action through:
 
 This approach helps connect environmental awareness with measurable student participation and everyday eco-friendly actions.
 
+## Screenshots
+
+
 ## 👥 Project Team
 
 **Community Project:** Carbon Footprint Awareness for College Students
