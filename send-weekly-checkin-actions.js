@@ -25,7 +25,7 @@ function getCurrentDayNumber() {
   const now = new Date();
   const msPerDay = 24 * 60 * 60 * 1000;
   const daysPassed = Math.floor((now - start) / msPerDay);
-  return Math.min(Math.max(daysPassed + 1, 1), 4); // clamps between Day 1 and Day 4
+  return Math.min(Math.max(daysPassed + 1, 1), 7); // clamps between Day 1 and Day 4
 }
 
 async function sendDailyCheckIn() {
