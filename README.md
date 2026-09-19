@@ -105,3 +105,47 @@ Firebase Cloud Messaging
       ↓
 Student's Browser
 ```
+The GitHub Actions workflow runs automatically each day and triggers the notification script.
+
+The notification contains the current check-in day and provides three response options:
+
+Yes – The student followed the green action.
+Partially – The student followed the action to some extent.
+No – The student did not follow the action.
+
+The campaign is configured for a 7-day check-in period.
+
+The daily notification workflow is stored at:
+```text
+.github/workflows/weekly-checkin.yml
+```
+The notification script is:
+```text
+send-weekly-checkin-actions.js
+```
+The daily notification system helps maintain regular student participation and records their responses in Firebase Firestore for later analysis.
+
+
+### 6. Check-in Data Export
+
+Check-in responses are stored in the Firebase Firestore `checkins` collection.
+
+The project uses the following script to export the stored responses:
+
+```text
+export-checkins.js
+```
+
+The script reads the check-in data from Firestore and generates a CSV file:
+```text
+checkins.csv
+```
+The exported data contains:
+```table
+| Field        | Description                   |
+| ------------ | ----------------------------- |
+| Day          | Check-in day                  |
+| Response     | Yes / Partially / No          |
+| Responded At | Date and time of the response |
+```
+
