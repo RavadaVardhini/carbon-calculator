@@ -1,6 +1,6 @@
 // This version is built to run automatically via GitHub Actions.
 // It reads the Firebase key from an environment variable (a GitHub Secret),
-// and figures out which week it is on its own — no manual editing needed.
+// and figures out which day it is on its own — no manual editing needed.
 
 const { initializeApp, cert } = require('firebase-admin/app');
 const { getFirestore } = require('firebase-admin/firestore');
@@ -17,19 +17,19 @@ initializeApp({
 const db = getFirestore();
 const messaging = getMessaging();
 
-// ---- change this once: the date your Week 1 email/notification went out ----
+// ---- change this once: the date your Day 1 email/notification went out ----
 const CAMPAIGN_START_DATE = "2026-08-23"; // YYYY-MM-DD, a Monday works best
 
-function getCurrentWeekNumber() {
+function getCurrentDayNumber() {
   const start = new Date(CAMPAIGN_START_DATE);
   const now = new Date();
-  const msPerWeek = 7 * 24 * 60 * 60 * 1000;
-  const weeksPassed = Math.floor((now - start) / msPerWeek);
-  return Math.min(Math.max(weeksPassed + 1, 1), 4); // clamps between Week 1 and Week 4
+  const msPerDay = 24 * 60 * 60 * 1000;
+  const daysPassed = Math.floor((now - start) / msPerDay);
+  return Math.min(Math.max(daysPassed + 1, 1), 4); // clamps between Day 1 and Day 4
 }
 
-async function sendWeeklyCheckIn() {
-  const WEEK_NUMBER = String(getCurrentWeekNumber());
+async function sendDailyCheckIn() {
+  const DAY_NUMBER = String(getCurrentDayNumber());
 
   const subscribersSnap = await db.collection('subscribers').get();
 
@@ -39,10 +39,10 @@ async function sendWeeklyCheckIn() {
   }
 
   const tokens = subscribersSnap.docs.map(doc => doc.id);
-  console.log(`Sending Week ${WEEK_NUMBER} check-in to ${tokens.length} subscriber(s)...`);
+  console.log(`Sending Day ${DAY_NUMBER} check-in to ${tokens.length} subscriber(s)...`);
 
   const message = {
-    data: { week: WEEK_NUMBER },
+    data: { day: DAY_NUMBER },
     tokens: tokens
   };
 
@@ -56,4 +56,4 @@ async function sendWeeklyCheckIn() {
   });
 }
 
-sendWeeklyCheckIn();
+sendDailyCheckIn();
