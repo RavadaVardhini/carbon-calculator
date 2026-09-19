@@ -1,0 +1,32 @@
+name: Export Check-ins
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  export-checkins:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Firebase Admin
+        run: npm install firebase-admin
+
+      - name: Export Firestore check-ins
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: node export-checkins.js
+
+      - name: Upload CSV
+        uses: actions/upload-artifact@v4
+        with:
+          name: checkins-csv
+          path: checkins.csv
+          if-no-files-found: error
