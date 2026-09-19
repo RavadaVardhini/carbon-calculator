@@ -141,13 +141,12 @@ The script reads the check-in data from Firestore and generates a CSV file:
 checkins.csv
 ```
 The exported data contains:
-```table
+
 | Field        | Description                   |
 | ------------ | ----------------------------- |
 | Day          | Check-in day                  |
 | Response     | Yes / Partially / No          |
 | Responded At | Date and time of the response |
-```
 
 The export process is automated using GitHub Actions.
 
