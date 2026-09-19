@@ -149,3 +149,142 @@ The exported data contains:
 | Responded At | Date and time of the response |
 ```
 
+The export process is automated using GitHub Actions.
+
+The workflow file is:
+```text
+.github/workflows/export-checkins.yml
+```
+The export process works as follows:
+```text
+Firebase Firestore
+       ↓
+export-checkins.js
+       ↓
+checkins.csv
+       ↓
+GitHub Actions
+       ↓
+checkins-csv Artifact
+       ↓
+Download
+       ↓
+Open in Excel
+```
+The GitHub Actions workflow:
+
+Checks out the project repository.
+Sets up Node.js.
+Installs the Firebase Admin SDK.
+Connects to Firebase using the FIREBASE_SERVICE_ACCOUNT GitHub Secret.
+Runs export-checkins.js.
+Generates checkins.csv.
+Uploads the CSV as a GitHub Actions artifact.
+
+The generated CSV can be downloaded from the Artifacts section of the completed GitHub Actions workflow and used for further data analysis.
+
+## 📈 Data Analysis
+
+The collected check-in data can be analysed to understand student participation throughout the campaign.
+
+The exported `checkins.csv` file can be used to calculate:
+
+- Total number of check-in responses
+- Day-wise participation
+- Number of **Yes** responses
+- Number of **Partially** responses
+- Number of **No** responses
+- Participation trends across the 7-day campaign
+
+The data can be opened and analysed using **Microsoft Excel** or other data-analysis tools.
+
+The analysis helps identify participation patterns and provides measurable data for evaluating student engagement with the green-action activity.
+
+## 🚀 Deployment
+
+The project is deployed using **GitHub Pages**.
+
+The main carbon footprint calculator is available through the GitHub Pages website.
+
+The EcoTrack green check-in system is available through the:
+
+```text
+/checkin/
+```
+path.
+GitHub Pages provides the web hosting required to make the project accessible through a web browser.
+
+## 🔐 Configuration and Security
+
+The project uses Firebase services for notifications and data storage.
+
+Firebase credentials required by GitHub Actions are stored securely using **GitHub Secrets**.
+
+The Firebase service account is accessed through the following GitHub Secret:
+
+```text
+FIREBASE_SERVICE_ACCOUNT
+```
+The service-account JSON file should not be uploaded or committed directly to the GitHub repository.
+
+GitHub Actions uses the stored secret to securely authenticate with Firebase when sending notifications and exporting check-in data.
+
+## 🌱 Project Impact
+
+The project focuses on creating awareness about carbon footprints among college students and encouraging practical environmental actions in their daily lives.
+
+The system connects awareness with action through:
+
+1. Learning about carbon footprints.
+2. Understanding personal carbon footprint through the calculator.
+3. Identifying simple eco-friendly actions.
+4. Receiving daily green-action reminders.
+5. Recording daily participation through check-ins.
+6. Analysing the collected participation data.
+
+This approach helps connect environmental awareness with measurable student participation and everyday eco-friendly actions.
+
+## 👥 Project Team
+
+**Community Project:** Carbon Footprint Awareness for College Students
+
+**MVGR College of Engineering (A)**  
+**Department of Computer Science and Engineering**
+
+**Batch:** BATCH-12D  
+**Section:** D
+
+### Team Members
+
+| S. No. | Name | Role | Roll Number |
+|---|---|---|---|
+| 1 | Ravada Vardhini | Batch Leader | 24331A05O9 |
+| 2 | Penchala Akhil | Team Member | 24331A05M6 |
+| 3 | Ragala Santhu | Team Member | 24331A05O4 |
+| 4 | Regana Karthik | Team Member | 24331A05P4 |
+
+## 📄 Project Status
+
+The project includes:
+
+- [x] Carbon footprint calculator
+- [x] Awareness survey integration
+- [x] Green check-in system
+- [x] Firebase Firestore integration
+- [x] Browser notification subscription
+- [x] Automated daily notifications
+- [x] Check-in response storage
+- [x] CSV data export
+- [x] GitHub Actions workflows
+
+---
+
+## 🌍 Conclusion
+
+The project combines a carbon footprint calculator, awareness survey, daily green-action reminders, and a check-in system to promote environmental awareness among college students.
+
+Firebase is used for storing check-in responses and managing notifications, while GitHub Actions automates the daily notification process and data export.
+
+The collected data can be exported as a CSV file and analysed to understand student participation throughout the campaign.
+
+Overall, the project connects **awareness, personal carbon-footprint understanding, daily eco-friendly actions, and measurable participation** in a single web-based system.
