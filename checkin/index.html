@@ -3,10 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EcoTrack — 7-day Check-in</title>
+<title>EcoTrack — 14-Day Green Action Challenge</title>
+
 <style>
   body{
-    font-family: 'Inter', sans-serif;
+    font-family:'Inter',sans-serif;
     background:#EEF0E2;
     color:#1B2A20;
     display:flex;
@@ -15,19 +16,136 @@
     min-height:100vh;
     margin:0;
     padding:24px;
+    box-sizing:border-box;
   }
+
   .card{
     background:#FAF9F1;
     border:1px solid #D8D9C7;
     border-radius:8px;
-    padding:36px;
-    max-width:420px;
+    padding:32px;
+    max-width:460px;
+    width:100%;
     text-align:center;
+    box-sizing:border-box;
   }
-  h1{ font-size:22px; margin-bottom:12px; }
-  p{ color:#4B5A4F; font-size:14px; line-height:1.5; }
-  button{
+
+  h1{
+    font-size:22px;
+    margin:0 0 8px;
+  }
+
+  .subtitle{
+    color:#4B5A4F;
+    font-size:14px;
+    line-height:1.5;
+    margin-bottom:24px;
+  }
+
+  .action-box{
+    background:#EEF0E2;
+    border:1px solid #D8D9C7;
+    border-radius:8px;
+    padding:22px 18px;
+    margin-bottom:20px;
+  }
+
+  .day-label{
+    font-size:13px;
+    color:#2B6F77;
+    font-weight:600;
+    margin-bottom:8px;
+  }
+
+  .action-title{
+    font-size:19px;
+    font-weight:600;
+    margin-bottom:10px;
+  }
+
+  .action-description{
+    color:#4B5A4F;
+    font-size:14px;
+    line-height:1.5;
+    margin:0;
+  }
+
+  .progress-section{
+    text-align:left;
+    margin:20px 0;
+  }
+
+  .progress-header{
+    display:flex;
+    justify-content:space-between;
+    font-size:13px;
+    color:#4B5A4F;
+    margin-bottom:7px;
+  }
+
+  .progress-bar{
+    width:100%;
+    height:8px;
+    background:#D8D9C7;
+    border-radius:20px;
+    overflow:hidden;
+  }
+
+  .progress-fill{
+    height:100%;
+    width:0%;
+    background:#2B6F77;
+    transition:width 0.3s ease;
+  }
+
+  .question{
+    font-size:15px;
+    font-weight:600;
+    margin:22px 0 12px;
+  }
+
+  .response-buttons{
+    display:flex;
+    gap:8px;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+
+  .response-btn{
+    flex:1;
+    min-width:105px;
+    margin:0;
+    background:#2B6F77;
+    color:white;
+    border:none;
+    padding:11px 12px;
+    border-radius:5px;
+    font-size:14px;
+    cursor:pointer;
+  }
+
+  .response-btn:hover{
+    opacity:0.9;
+  }
+
+  .response-btn:disabled{
+    background:#A9CBCF;
+    cursor:default;
+  }
+
+  .secondary-btn{
     margin-top:20px;
+    background:transparent;
+    color:#2B6F77;
+    border:1px solid #2B6F77;
+    padding:10px 18px;
+    border-radius:5px;
+    font-size:14px;
+    cursor:pointer;
+  }
+
+  #subscribeBtn{
+    margin-top:18px;
     background:#2B6F77;
     color:white;
     border:none;
@@ -36,24 +154,217 @@
     font-size:15px;
     cursor:pointer;
   }
-  button:disabled{ background:#A9CBCF; cursor:default; }
-  #status{ margin-top:16px; font-size:13px; color:#4B5A4F; }
+
+  #subscribeBtn:disabled{
+    background:#A9CBCF;
+    cursor:default;
+  }
+
+  #status{
+    margin-top:16px;
+    font-size:13px;
+    color:#4B5A4F;
+    line-height:1.5;
+  }
+
+  .completed{
+    background:#EEF0E2;
+    border:1px solid #D8D9C7;
+    border-radius:8px;
+    padding:18px;
+    margin-top:18px;
+  }
+
+  .completed-title{
+    font-size:16px;
+    font-weight:600;
+    margin-bottom:6px;
+  }
+
+  .completed-text{
+    font-size:13px;
+    color:#4B5A4F;
+    line-height:1.5;
+    margin:0;
+  }
+
+  .hidden{
+    display:none;
+  }
+
+  .finished{
+    padding:10px 0;
+  }
+
+  .finished h2{
+    font-size:20px;
+    margin-bottom:8px;
+  }
+
+  .finished p{
+    color:#4B5A4F;
+    font-size:14px;
+    line-height:1.5;
+  }
+
+  @media(max-width:400px){
+    .card{
+      padding:24px 18px;
+    }
+
+    .response-btn{
+      min-width:90px;
+    }
+  }
 </style>
 </head>
+
 <body>
+
 <div class="card">
-  <h1>EcoTrack 7-day Check-in</h1>
-  <p>Turn on notifications to get a quick weekly reminder — just tap Yes, Partially, or No to let us know if you followed your pledge.</p>
-  <button id="subscribeBtn">Allow Notifications</button>
-  <div id="status"></div>
+
+  <h1>EcoTrack</h1>
+
+  <p class="subtitle">
+    14-Day Green Action Challenge<br>
+    One small action every day. Build better habits in two weeks.
+  </p>
+
+  <!-- TODAY'S ACTION -->
+  <div id="challengeSection">
+
+    <div class="action-box">
+
+      <div class="day-label" id="dayLabel">
+        Day 1
+      </div>
+
+      <div class="action-title" id="actionTitle">
+        Save Electricity 💡
+      </div>
+
+      <p class="action-description" id="actionDescription">
+        Switch off lights and fans when you leave a room or when they are not needed.
+      </p>
+
+    </div>
+
+
+    <!-- PROGRESS -->
+    <div class="progress-section">
+
+      <div class="progress-header">
+        <span>14-Day Progress</span>
+        <span id="progressText">0 / 14 days</span>
+      </div>
+
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+
+    </div>
+
+
+    <!-- CHECK-IN -->
+    <div id="checkinSection">
+
+      <div class="question">
+        Did you complete today's action?
+      </div>
+
+      <div class="response-buttons">
+
+        <button class="response-btn" data-response="Yes">
+          ✓ Yes
+        </button>
+
+        <button class="response-btn" data-response="Partially">
+          ~ Partially
+        </button>
+
+        <button class="response-btn" data-response="No">
+          ✕ Not today
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- COMPLETED MESSAGE -->
+    <div id="completedMessage" class="completed hidden">
+
+      <div class="completed-title">
+        Today's check-in is complete ✓
+      </div>
+
+      <p class="completed-text">
+        Thank you for taking part in the EcoTrack challenge.
+        Come back tomorrow for your next green action.
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <!-- CHALLENGE FINISHED -->
+  <div id="finishedSection" class="finished hidden">
+
+    <h2>🌱 Challenge Complete!</h2>
+
+    <p>
+      You completed the 14-Day Green Action Challenge.
+      Small actions can become everyday habits.
+    </p>
+
+    <div class="progress-section">
+
+      <div class="progress-header">
+        <span>Your Progress</span>
+        <span>14 / 14 days</span>
+      </div>
+
+      <div class="progress-bar">
+        <div
+          class="progress-fill"
+          style="width:100%;">
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- NOTIFICATION SECTION -->
+
+  <div id="notificationSection">
+
+    <button id="subscribeBtn">
+      🔔 Allow Daily Notifications
+    </button>
+
+    <div id="status"></div>
+
+  </div>
+
+
 </div>
+
 
 <!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
+
 <script>
+
+  /* ---------------------------------------------------
+     FIREBASE CONFIGURATION
+  --------------------------------------------------- */
+
   const firebaseConfig = {
     apiKey: "AIzaSyD6Cpb6BgLIzvHva1AV9JMiobjmEpjqCr4",
     authDomain: "ecotrack-292ab.firebaseapp.com",
@@ -65,43 +376,613 @@
   };
 
   firebase.initializeApp(firebaseConfig);
+
   const messaging = firebase.messaging();
   const db = firebase.firestore();
 
-  const VAPID_KEY = "BIdPylGJzf_XCPWKf8IxZQIJxm0OLCfgfra0AJHRTAqLxPlI8ho5P0NiFusJsjgE6LXd6qYW30pSrt0jyPItQ2A";
+  const VAPID_KEY =
+    "BIdPylGJzf_XCPWKf8IxZQIJxm0OLCfgfra0AJHRTAqLxPlI8ho5P0NiFusJsjgE6LXd6qYW30pSrt0jyPItQ2A";
 
-  const btn = document.getElementById('subscribeBtn');
-  const status = document.getElementById('status');
 
-  btn.addEventListener('click', async () => {
-    status.textContent = "Requesting permission...";
-    try {
-      const permission = await Notification.requestPermission();
-      if (permission !== "granted") {
-        status.textContent = "Notifications were not allowed. You can enable them later in your browser settings.";
-        return;
-      }
+  /* ---------------------------------------------------
+     14 DAILY GREEN ACTIONS
+  --------------------------------------------------- */
 
-      const registration = await navigator.serviceWorker.register('./firebase-messaging-sw.js');
-      const token = await messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: registration });
+  const dailyActions = [
 
-      if (token) {
-        // Save this device's token so we can send it weekly reminders
-        await db.collection('subscribers').doc(token).set({
-          token: token,
-          subscribedAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        status.textContent = "You're all set! You'll get a 7-day check-in.";
-        btn.disabled = true;
-        btn.textContent = "Subscribed ✓";
-      } else {
-        status.textContent = "Couldn't get a notification token. Try again.";
-      }
-    } catch (err) {
-      console.error(err);
-      status.textContent = "Something went wrong: " + err.message;
+    {
+      title: "Save Electricity 💡",
+      description:
+        "Switch off lights and fans when you leave a room or when they are not needed."
+    },
+
+    {
+      title: "Unplug Devices 🔌",
+      description:
+        "Unplug chargers and electronic devices when they are not being used."
+    },
+
+    {
+      title: "Choose Greener Transport 🚌",
+      description:
+        "When practical, walk, cycle, use public transport, or share a ride."
+    },
+
+    {
+      title: "Save Water 💧",
+      description:
+        "Avoid unnecessary water use and turn off taps when water is not needed."
+    },
+
+    {
+      title: "Reduce Single-Use Plastic 🥤",
+      description:
+        "Avoid at least one unnecessary single-use plastic item today."
+    },
+
+    {
+      title: "Avoid Food Waste 🍽️",
+      description:
+        "Take only the amount of food you need and avoid throwing away edible food."
+    },
+
+    {
+      title: "Separate Your Waste ♻️",
+      description:
+        "Put different types of waste in the appropriate bins whenever possible."
+    },
+
+    {
+      title: "Reduce Unnecessary Screen Use 📱",
+      description:
+        "Avoid unnecessary device use and switch off devices when you are finished."
+    },
+
+    {
+      title: "Reduce Paper Use 📝",
+      description:
+        "Avoid unnecessary printing and use digital documents when appropriate."
+    },
+
+    {
+      title: "Use Reusable Items 🚰",
+      description:
+        "Carry or use a reusable water bottle, cup, or other reusable item."
+    },
+
+    {
+      title: "Avoid Unnecessary Purchases 🛍️",
+      description:
+        "Before buying something, ask yourself whether you really need it."
+    },
+
+    {
+      title: "Care for Green Spaces 🌱",
+      description:
+        "Protect plants and green spaces around your home, college, or community."
+    },
+
+    {
+      title: "Think About E-Waste 💻",
+      description:
+        "Keep old electronic items out of regular waste and consider responsible disposal."
+    },
+
+    {
+      title: "Spread the Action 🌍",
+      description:
+        "Encourage one friend or family member to take an eco-friendly action today."
     }
-  });
+
+  ];
+
+
+  /* ---------------------------------------------------
+     PAGE ELEMENTS
+  --------------------------------------------------- */
+
+  const dayLabel =
+    document.getElementById("dayLabel");
+
+  const actionTitle =
+    document.getElementById("actionTitle");
+
+  const actionDescription =
+    document.getElementById("actionDescription");
+
+  const progressText =
+    document.getElementById("progressText");
+
+  const progressFill =
+    document.getElementById("progressFill");
+
+  const checkinSection =
+    document.getElementById("checkinSection");
+
+  const completedMessage =
+    document.getElementById("completedMessage");
+
+  const challengeSection =
+    document.getElementById("challengeSection");
+
+  const finishedSection =
+    document.getElementById("finishedSection");
+
+  const subscribeBtn =
+    document.getElementById("subscribeBtn");
+
+  const status =
+    document.getElementById("status");
+
+
+  /* ---------------------------------------------------
+     LOCAL STORAGE
+  --------------------------------------------------- */
+
+  let notificationToken =
+    localStorage.getItem("ecotrackToken");
+
+  let challengeStartDate =
+    localStorage.getItem("ecotrackStartDate");
+
+
+  /* ---------------------------------------------------
+     GET DATE ONLY
+  --------------------------------------------------- */
+
+  function getDateOnly(date){
+
+    return new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate()
+    );
+
+  }
+
+
+  /* ---------------------------------------------------
+     CALCULATE CURRENT DAY
+  --------------------------------------------------- */
+
+  function getCurrentChallengeDay(){
+
+    if(!challengeStartDate){
+      return 1;
+    }
+
+    const start =
+      getDateOnly(new Date(challengeStartDate));
+
+    const today =
+      getDateOnly(new Date());
+
+    const difference =
+      today.getTime() - start.getTime();
+
+    const day =
+      Math.floor(
+        difference / (1000 * 60 * 60 * 24)
+      ) + 1;
+
+    return day;
+
+  }
+
+
+  /* ---------------------------------------------------
+     GET COMPLETED DAYS FROM LOCAL STORAGE
+  --------------------------------------------------- */
+
+  function getCompletedDays(){
+
+    const saved =
+      localStorage.getItem("ecotrackCompletedDays");
+
+    if(!saved){
+      return [];
+    }
+
+    try{
+
+      return JSON.parse(saved);
+
+    }catch(error){
+
+      return [];
+
+    }
+
+  }
+
+
+  /* ---------------------------------------------------
+     SAVE COMPLETED DAY
+  --------------------------------------------------- */
+
+  function saveCompletedDay(day){
+
+    let completed =
+      getCompletedDays();
+
+    if(!completed.includes(day)){
+
+      completed.push(day);
+
+      completed.sort(
+        (a,b) => a-b
+      );
+
+      localStorage.setItem(
+        "ecotrackCompletedDays",
+        JSON.stringify(completed)
+      );
+
+    }
+
+  }
+
+
+  /* ---------------------------------------------------
+     UPDATE PROGRESS
+  --------------------------------------------------- */
+
+  function updateProgress(){
+
+    const completed =
+      getCompletedDays();
+
+    const count =
+      completed.length;
+
+    const percentage =
+      Math.min(
+        (count / 14) * 100,
+        100
+      );
+
+    progressText.textContent =
+      `${count} / 14 days`;
+
+    progressFill.style.width =
+      percentage + "%";
+
+  }
+
+
+  /* ---------------------------------------------------
+     SHOW TODAY'S ACTION
+  --------------------------------------------------- */
+
+  function showToday(){
+
+    const day =
+      getCurrentChallengeDay();
+
+    updateProgress();
+
+
+    /* Challenge finished */
+
+    if(day > 14){
+
+      challengeSection.classList.add("hidden");
+
+      finishedSection.classList.remove("hidden");
+
+      return;
+
+    }
+
+
+    const action =
+      dailyActions[day - 1];
+
+
+    dayLabel.textContent =
+      `Day ${day}`;
+
+    actionTitle.textContent =
+      action.title;
+
+    actionDescription.textContent =
+      action.description;
+
+
+    const completed =
+      getCompletedDays();
+
+
+    if(completed.includes(day)){
+
+      checkinSection.classList.add("hidden");
+
+      completedMessage.classList.remove("hidden");
+
+    }else{
+
+      checkinSection.classList.remove("hidden");
+
+      completedMessage.classList.add("hidden");
+
+    }
+
+  }
+
+
+  /* ---------------------------------------------------
+     CHECK-IN BUTTONS
+  --------------------------------------------------- */
+
+  document
+    .querySelectorAll(".response-btn")
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        async () => {
+
+          const response =
+            button.dataset.response;
+
+          const day =
+            getCurrentChallengeDay();
+
+          if(day < 1 || day > 14){
+            return;
+          }
+
+
+          button.disabled = true;
+
+
+          try{
+
+            const data = {
+
+              day: day,
+
+              action:
+                dailyActions[day - 1].title,
+
+              response: response,
+
+              respondedAt:
+                firebase.firestore.FieldValue.serverTimestamp()
+
+            };
+
+
+            /*
+              Save the check-in.
+
+              If the user has a notification token,
+              use it as the participant identifier.
+            */
+
+            if(notificationToken){
+
+              await db
+                .collection("checkins")
+                .doc(
+                  notificationToken + "_day_" + day
+                )
+                .set(data);
+
+            }else{
+
+              /*
+                If notifications haven't been enabled,
+                create a random local participant ID.
+              */
+
+              let participantId =
+                localStorage.getItem(
+                  "ecotrackParticipantId"
+                );
+
+              if(!participantId){
+
+                participantId =
+                  "participant_" +
+                  Math.random()
+                    .toString(36)
+                    .substring(2,10);
+
+                localStorage.setItem(
+                  "ecotrackParticipantId",
+                  participantId
+                );
+
+              }
+
+              await db
+                .collection("checkins")
+                .doc(
+                  participantId + "_day_" + day
+                )
+                .set(data);
+
+            }
+
+
+            saveCompletedDay(day);
+
+            updateProgress();
+
+            checkinSection.classList.add("hidden");
+
+            completedMessage.classList.remove("hidden");
+
+
+          }catch(error){
+
+            console.error(error);
+
+            status.textContent =
+              "Couldn't save your check-in. Please try again.";
+
+            button.disabled = false;
+
+          }
+
+        }
+      );
+
+    });
+
+
+  /* ---------------------------------------------------
+     NOTIFICATION SUBSCRIPTION
+  --------------------------------------------------- */
+
+  subscribeBtn.addEventListener(
+    "click",
+    async () => {
+
+      status.textContent =
+        "Requesting notification permission...";
+
+      try{
+
+        const permission =
+          await Notification.requestPermission();
+
+
+        if(permission !== "granted"){
+
+          status.textContent =
+            "Notifications were not allowed. You can enable them later in your browser settings.";
+
+          return;
+
+        }
+
+
+        const registration =
+          await navigator.serviceWorker.register(
+            "./firebase-messaging-sw.js"
+          );
+
+
+        const token =
+          await messaging.getToken({
+
+            vapidKey: VAPID_KEY,
+
+            serviceWorkerRegistration:
+              registration
+
+          });
+
+
+        if(token){
+
+          notificationToken =
+            token;
+
+          localStorage.setItem(
+            "ecotrackToken",
+            token
+          );
+
+
+          /*
+            Start the 14-day challenge
+            when the user subscribes for
+            the first time.
+          */
+
+          if(!challengeStartDate){
+
+            challengeStartDate =
+              new Date().toISOString();
+
+            localStorage.setItem(
+              "ecotrackStartDate",
+              challengeStartDate
+            );
+
+          }
+
+
+          await db
+            .collection("subscribers")
+            .doc(token)
+            .set({
+
+              token: token,
+
+              subscribedAt:
+                firebase.firestore.FieldValue.serverTimestamp(),
+
+              challengeStartedAt:
+                firebase.firestore.FieldValue.serverTimestamp(),
+
+              challengeDuration:
+                14
+
+            }, { merge:true });
+
+
+          status.textContent =
+            "You're all set! You'll receive a daily EcoTrack reminder for 14 days.";
+
+          subscribeBtn.disabled =
+            true;
+
+          subscribeBtn.textContent =
+            "Daily Reminders Enabled ✓";
+
+
+          showToday();
+
+
+        }else{
+
+          status.textContent =
+            "Couldn't get a notification token. Please try again.";
+
+        }
+
+
+      }catch(error){
+
+        console.error(error);
+
+        status.textContent =
+          "Something went wrong: " +
+          error.message;
+
+      }
+
+    }
+  );
+
+
+  /* ---------------------------------------------------
+     INITIAL PAGE LOAD
+  --------------------------------------------------- */
+
+  showToday();
+
+
+  /*
+    If the user already subscribed earlier,
+    keep the button disabled.
+  */
+
+  if(notificationToken){
+
+    subscribeBtn.disabled =
+      true;
+
+    subscribeBtn.textContent =
+      "Daily Reminders Enabled ✓";
+
+  }
+
 </script>
+
 </body>
 </html>
