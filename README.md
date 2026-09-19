@@ -87,3 +87,21 @@ The stored information includes:
 day
 response
 respondedAt
+```
+### 5. Automated Daily Notifications
+
+The project uses **GitHub Actions** and **Firebase Cloud Messaging (FCM)** to automatically send daily green-action check-in notifications to subscribed students.
+
+The notification process works as follows:
+
+```text
+GitHub Actions
+      ↓
+Firebase Admin SDK
+      ↓
+Firestore Subscribers
+      ↓
+Firebase Cloud Messaging
+      ↓
+Student's Browser
+```
