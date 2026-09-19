@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EcoTrack — Weekly Check-in</title>
+<title>EcoTrack — 7-day Check-in</title>
 <style>
   body{
     font-family: 'Inter', sans-serif;
@@ -42,7 +42,7 @@
 </head>
 <body>
 <div class="card">
-  <h1>EcoTrack Weekly Check-in</h1>
+  <h1>EcoTrack 7-day Check-in</h1>
   <p>Turn on notifications to get a quick weekly reminder — just tap Yes, Partially, or No to let us know if you followed your pledge.</p>
   <button id="subscribeBtn">Allow Notifications</button>
   <div id="status"></div>
@@ -91,7 +91,7 @@
           token: token,
           subscribedAt: firebase.firestore.FieldValue.serverTimestamp()
         });
-        status.textContent = "You're all set! You'll get a weekly check-in.";
+        status.textContent = "You're all set! You'll get a 7-day check-in.";
         btn.disabled = true;
         btn.textContent = "Subscribed ✓";
       } else {
