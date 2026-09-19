@@ -243,7 +243,27 @@ The system connects awareness with action through:
 
 This approach helps connect environmental awareness with measurable student participation and everyday eco-friendly actions.
 
-## Screenshots
+## 📸 Screenshots
+
+### Carbon Footprint Calculator
+
+![Carbon Footprint Calculator](images/calculator.png)
+
+### Awareness Survey
+
+![Google Form](images/google-form.png)
+
+### Daily Green Action Notification
+
+![Daily Notification](images/notification.png)
+
+### Firebase Check-in Data
+
+![Firestore Check-ins](images/firestore.png)
+
+### Check-in CSV Export
+
+![CSV Export](images/csv-export.png)
 
 
 ## 👥 Project Team
